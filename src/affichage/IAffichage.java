@@ -1,17 +1,25 @@
 package affichage;
 
+import jeu.Banc;
 import jeu.Carte;
 import jeu.Joueur;
 
-public interface Affichage {
+public interface IAffichage {
 	public default void afficherMain(Joueur joueur) {
-		Carte[] main = joueur.getMain(joueur);
+		Carte[] main = joueur.getMain();
 		System.out.println("Vos cartes sont : ");
-		for (int i = 0; i < joueur.getNbCarte(); i++) {
-			System.out.println(main[i].getNom());
+		for (int i = 0; i < joueur.getNbCarte()+1; i++) {
+			System.out.println(main[i].getNom()+"\n");
 		}
 	}
-
+	public default void afficherBanc(Joueur joueur) {
+		Banc objetBanc = joueur.getBanc();
+		Carte[] tableauBanc= objetBanc.getBanc();
+		System.out.println("Vos cartes de banc sont : ");
+		for (int i = 0; i < joueur.getCarteBancRestante()+1; i++) {
+			System.out.println(tableauBanc[i].getNom()+"\n");
+		}
+	}
 	public default void afficherEffetCarte(Carte carte) {
 		afficherEffetCartePop(carte);
 		afficherEffetCartePv(carte);
@@ -52,6 +60,9 @@ public interface Affichage {
 
 		}
 
+	}
+	public default void afficherPiocheVide(){
+		System.out.println("la pioche est vide");
 	}
 
 }

@@ -2,17 +2,24 @@ package jeu;
 
 import java.security.SecureRandom;
 
-public class Joueur {
+import affichage.IAffichage;
+
+public class Joueur implements IAffichage {
 	private String nom;
 	private int pv;
 	private int popularite;
 	private Carte[] main = new Carte[5];
-	private int nbCarteEnMain;
+	private int nbCarteEnMain = 0;
+	private SecureRandom random;
+	private Banc banc;
 
-	public Joueur(String nom, int pv, int popularite) {
+	public Joueur(String nom) {
 		this.nom = nom;
-		this.pv = pv;
-		this.popularite = popularite;
+		try {
+			random = SecureRandom.getInstanceStrong();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public String getNom() {
@@ -27,33 +34,22 @@ public class Joueur {
 		return popularite;
 	}
 
-	public int perdreVie(Joueur joueur, int degat, Boolean moi) {
+	public int modifierVie(Joueur joueur, int degat) {
 		int vie;
-		if (moi) {
 
-			this.pv = this.getPv() - degat;
-			vie = joueur.getPv();
+		joueur.pv = joueur.getPv() - degat;
+		vie = joueur.getPv();
 
-		} else {
-			joueur = new Joueur(joueur.getNom(), joueur.getPv() - degat, joueur.getPopularite());
-			vie = joueur.getPv();
-		}
 		return vie;
 
 	}
 
-	public int perdrePopadv(Joueur joueur, int populariteEnMoins, Boolean moi) {
-
+	public int modifierPop(Joueur joueur, int populariteEnMoins) {
 		int pop;
-		if (moi) {
 
-			this.pv = this.getPv() - populariteEnMoins;
-			pop = joueur.getPv();
+		joueur.popularite = joueur.getPopularite() - populariteEnMoins;
+		pop = joueur.getPopularite();
 
-		} else {
-			joueur = new Joueur(joueur.getNom(), joueur.getPv(), joueur.getPopularite() - populariteEnMoins);
-			pop = joueur.getPv();
-		}
 		return pop;
 
 	}
@@ -63,24 +59,50 @@ public class Joueur {
 		return nbCarteEnMain;
 	}
 
-	public boolean getGagnant() {
-		boolean gagnant = false;
-		if (this.getPopularite() > 4 || this.getPv() < 1) {
-			gagnant = true;
-		}
-		return gagnant;
-	}
+	public void piocher(Pioche ObjetPioche) {
+		// piocher la premier carte de la pioche donc dernier element et c'est ok car
+		// t'as déjà melanger
 
-	public Carte[] getMain(Joueur joueur) {
-		return joueur.getMain(joueur);
+		Carte[] tableauPioche = ObjetPioche.getPioche();
+		if (this.nbCarteEnMain == 0) {
 
-	}
-
-	/*public void getPiocher() {
-		if (nbCarteEnMain > 5) {
-
+			this.main[this.nbCarteEnMain] = tableauPioche[ObjetPioche.getCarteRestante()];
 		} else {
+			if (ObjetPioche.getCarteRestante() > 0) {
+
+				this.main[this.nbCarteEnMain + 1] = ObjetPioche.donnerCarte();
+				ObjetPioche.modifCarteRestante();
+				if (this.nbCarteEnMain < 5) {
+					this.nbCarteEnMain++;
+				}
+			} else {
+				afficherPiocheVide();
+			}
 
 		}
-	}*/
+	}
+
+	public void creeMain(Pioche ObjetPioche) {
+
+		for (int i = 0; i < 6; i++) {
+			this.piocher(ObjetPioche);
+		}
+	}
+
+	
+	public Carte[] getMain() {
+		return this.main;
+	}
+	public void getAfficherMain(Joueur joueur) {
+		getAfficherMain(joueur);
+			
+		}
+	}
+public Banc getBanc() {
+	return this.banc;
+}
+public int getCarteBancRestante() {
+	int nbCarteBancRestante = banc.getCarteRestante();
+	return nbCarteBancRestante;
+}
 }

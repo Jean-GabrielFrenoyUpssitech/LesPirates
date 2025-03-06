@@ -1,8 +1,8 @@
 package jeu;
 
-import affichage.Affichage;
+import affichage.IAffichage;
 
-public class Jeu implements Affichage{
+public class Jeu implements IAffichage{
 	private Carte[] deck = new Carte[40];
 	private Joueur[] joueurs = new Joueur[2];
 	public Jeu(Joueur[] joueurs) {
