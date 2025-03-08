@@ -24,12 +24,6 @@ public class Carte {
 	}
 
 
-	public Carte getCarteRevolteOrganisee() {
-		Carte revolteOrganisee = new Carte("popularité", "Révolte Organisée", Effets.REVOLTEORGANISEE);
-		return revolteOrganisee;
-	}
-	public Carte getCarteMainDeFer() {
-		Carte mainDeFer = new Carte("popularité", "Révolte Organisée", Effets.MAINDEFER);
-		return mainDeFer;
-	}
+	
+	
 }

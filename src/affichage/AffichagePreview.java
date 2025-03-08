@@ -131,5 +131,6 @@ public class AffichagePreview {
 		affichage.donnerStatusJoueur2(joueur2, 5, 0, bancJoueur2);
 		affichage.utiliserCarte(mainJoueur1);
 	}
+	
 
 }

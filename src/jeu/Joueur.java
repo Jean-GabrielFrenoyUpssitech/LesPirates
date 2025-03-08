@@ -1,7 +1,5 @@
 package jeu;
 
-import java.security.SecureRandom;
-
 import affichage.IAffichage;
 
 public class Joueur implements IAffichage {
@@ -10,16 +8,12 @@ public class Joueur implements IAffichage {
 	private int popularite;
 	private Carte[] main = new Carte[5];
 	private int nbCarteEnMain = 0;
-	private SecureRandom random;
 	private Banc banc;
+	private ZoneAttaque zoneAttaque;
 
 	public Joueur(String nom) {
 		this.nom = nom;
-		try {
-			random = SecureRandom.getInstanceStrong();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
 	}
 
 	public String getNom() {
@@ -63,20 +57,19 @@ public class Joueur implements IAffichage {
 		// piocher la premier carte de la pioche donc dernier element et c'est ok car
 		// t'as déjà melanger
 
-		Carte[] tableauPioche = ObjetPioche.getPioche();
-		if (this.nbCarteEnMain == 0) {
+		if (ObjetPioche.getCarteRestante() < 1) {
+			afficherPiocheVide();
 
-			this.main[this.nbCarteEnMain] = tableauPioche[ObjetPioche.getCarteRestante()];
 		} else {
-			if (ObjetPioche.getCarteRestante() > 0) {
+			if (this.nbCarteEnMain == 0) {
+				this.main[this.nbCarteEnMain] = ObjetPioche.donnerCarte();
+				this.nbCarteEnMain++;
 
+			} else {
 				this.main[this.nbCarteEnMain + 1] = ObjetPioche.donnerCarte();
-				ObjetPioche.modifCarteRestante();
 				if (this.nbCarteEnMain < 5) {
 					this.nbCarteEnMain++;
 				}
-			} else {
-				afficherPiocheVide();
 			}
 
 		}
@@ -89,20 +82,46 @@ public class Joueur implements IAffichage {
 		}
 	}
 
-	
 	public Carte[] getMain() {
 		return this.main;
 	}
+
 	public void getAfficherMain(Joueur joueur) {
 		getAfficherMain(joueur);
-			
+
+	}
+
+	public Banc getBanc() {
+		return this.banc;
+	}
+
+	public int getCarteBancRestante() {
+		int carteBancRestante = banc.getCartePosee();
+		return carteBancRestante;
+	}
+
+	public void jouerCarteSurBanc(Carte carte) {
+		if (banc.getCartePosee() < 6) {
+			afficherMsgCartePoseeSurBanc(carte);
+			banc.ajouterCarte(carte);
+		}
+
+		else {
+			afficherCarteRemplacerSurBanc();
+			afficherBanc(this);
+			banc.modifCarteNbRestante();
 		}
 	}
-public Banc getBanc() {
-	return this.banc;
-}
-public int getCarteBancRestante() {
-	int nbCarteBancRestante = banc.getCarteRestante();
-	return nbCarteBancRestante;
-}
+
+	public void jouerCarteSurZoneAttaque(Carte carte) {
+		zoneAttaque.ajouterCarte(carte);
+	}
+	public void jouerCarte(Carte carte) {
+		if (carte.getType()=="Popularité") {
+			jouerCarteSurBanc(carte);
+		}else {
+			jouerCarteSurZoneAttaque(carte);
+		}
+	}
+	ini 
 }

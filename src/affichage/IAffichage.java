@@ -1,10 +1,12 @@
 package affichage;
 
+
 import jeu.Banc;
 import jeu.Carte;
 import jeu.Joueur;
 
 public interface IAffichage {
+
 	public default void afficherMain(Joueur joueur) {
 		Carte[] main = joueur.getMain();
 		System.out.println("Vos cartes sont : ");
@@ -43,7 +45,15 @@ public interface IAffichage {
 		}
 
 	}
-
+	public default void afficherMsgCartePoseeSurBanc(Carte carte) {
+		System.out.println("La carte " + carte.getNom()+" est ajouté à votre banc");
+	}
+	public default void afficherCarteRemplacerSurBanc() {
+		System.out.println("Il n'y a plus de place sur votre banc veuillez choisir quel carte remplacer : ");
+	}
+	public default void afficherCartePoseeSurZoneAttaque(Carte carte) {
+		System.out.println("La dernière carte jouer sur la zone d'attaque est :  " + carte.getNom());
+	}
 	public default void afficherEffetCartePv(Carte carte) {
 		int pv = carte.getEffetCarte().getPv();
 		String cible;
@@ -64,5 +74,30 @@ public interface IAffichage {
 	public default void afficherPiocheVide(){
 		System.out.println("la pioche est vide");
 	}
+
+	public static void donnerContexte() {
+		System.out.println(
+				"Bienvenue dans le monde merveilleux de ONE PIECE... \nGold roger : Mon trésors ? Je vous le laisse Je l'ai laisser quelque pars dans ce monde.Trouver le !\n\n");
+	}
+
+	public static void donnerRegles(String regles) {
+		System.out.println("Pour gagner suivre les règles : \n\n" + regles + "\n\n");
+
+		System.out.println("Les Vaillant pirates sont : \n");
+	}
+
+	public static void affichageJoueur(int numJoueur, String joueur) {
+		System.out.println(
+				"le joueur " + numJoueur + " se nomme : " + joueur + " et commence avec : \nVie =5 \npopularite = 0\n");
+	}
+	public static void affichageDonnerJoueur(int num) {
+		System.out.println("Joueur "+num+", donner votre nom"+num);
+	}
+	
+
+	public default void afficherNbTour(int nbTour) {
+		System.out.println("nb tour : " + nbTour + "\n\n");
+	}
+	
 
 }
