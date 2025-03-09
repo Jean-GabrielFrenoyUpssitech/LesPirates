@@ -1,15 +1,17 @@
 package jeu;
 
 import affichage.IAffichage;
+import java.util.Scanner;
 
 public class Joueur implements IAffichage {
 	private String nom;
-	private int pv;
-	private int popularite;
+	private int pv=5;
+	private int popularite=0;
 	private Carte[] main = new Carte[5];
 	private int nbCarteEnMain = 0;
 	private Banc banc;
 	private ZoneAttaque zoneAttaque;
+	private static Scanner scaner = new Scanner(System.in);
 
 	public Joueur(String nom) {
 		this.nom = nom;
@@ -66,7 +68,7 @@ public class Joueur implements IAffichage {
 				this.nbCarteEnMain++;
 
 			} else {
-				this.main[this.nbCarteEnMain + 1] = ObjetPioche.donnerCarte();
+				this.main[this.nbCarteEnMain] = ObjetPioche.donnerCarte();
 				if (this.nbCarteEnMain < 5) {
 					this.nbCarteEnMain++;
 				}
@@ -77,7 +79,7 @@ public class Joueur implements IAffichage {
 
 	public void creeMain(Pioche ObjetPioche) {
 
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < 4; i++) {
 			this.piocher(ObjetPioche);
 		}
 	}
@@ -100,28 +102,47 @@ public class Joueur implements IAffichage {
 		return carteBancRestante;
 	}
 
-	public void jouerCarteSurBanc(Carte carte) {
+	public void jouerCarteSurBanc(Carte carte, Joueur joueur) {
 		if (banc.getCartePosee() < 6) {
 			afficherMsgCartePoseeSurBanc(carte);
 			banc.ajouterCarte(carte);
+			
 		}
 
 		else {
 			afficherCarteRemplacerSurBanc();
-			afficherBanc(this);
-			banc.modifCarteNbRestante();
+			IAffichage.afficherBanc(joueur);
+			Carte ancienneCarte = banc.modifierCarte(carte);
+			joueur.popularite = joueur.popularite - ancienneCarte.getEffetCarte().getPop();
+			joueur.pv = joueur.pv - ancienneCarte.getEffetCarte().getPv();
+
+
+		}
+
+		joueur.popularite = joueur.popularite + carte.getEffetCarte().getPop();
+		joueur.pv = joueur.pv + carte.getEffetCarte().getPv();
+
+	}
+
+	public void jouerCarteSurZoneAttaque(Carte carte,Joueur joueur) {
+		zoneAttaque.ajouterCarte(carte);
+		joueur.pv = joueur.pv + carte.getEffetCarte().getPv();
+
+	}
+
+	public void jouerCarte() {
+		IAffichage.afficherChoisirCarte();
+		int nbCarte = scaner.nextInt();
+		Carte carte = this.getMain()[nbCarte-1];
+		if (carte.getType() == "Popularité") {
+			jouerCarteSurBanc(carte, this);
+		} else {
+			jouerCarteSurZoneAttaque(carte,this);
 		}
 	}
 
-	public void jouerCarteSurZoneAttaque(Carte carte) {
-		zoneAttaque.ajouterCarte(carte);
+	public Joueur initJoueur(Pioche pioche) {
+		this.creeMain(pioche);
+		return this;
 	}
-	public void jouerCarte(Carte carte) {
-		if (carte.getType()=="Popularité") {
-			jouerCarteSurBanc(carte);
-		}else {
-			jouerCarteSurZoneAttaque(carte);
-		}
-	}
-	ini 
 }

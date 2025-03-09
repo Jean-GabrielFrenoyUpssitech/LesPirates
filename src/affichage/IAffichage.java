@@ -1,27 +1,28 @@
 package affichage;
 
-
 import jeu.Banc;
 import jeu.Carte;
 import jeu.Joueur;
 
 public interface IAffichage {
 
-	public default void afficherMain(Joueur joueur) {
+	public static void afficherMain(Joueur joueur) {
 		Carte[] main = joueur.getMain();
 		System.out.println("Vos cartes sont : ");
-		for (int i = 0; i < joueur.getNbCarte()+1; i++) {
-			System.out.println(main[i].getNom()+"\n");
+		for (int i = 0; i < joueur.getNbCarte(); i++) {
+			System.out.println(main[i].getNom() + "\n");
 		}
 	}
-	public default void afficherBanc(Joueur joueur) {
+
+	public static void afficherBanc(Joueur joueur) {
 		Banc objetBanc = joueur.getBanc();
-		Carte[] tableauBanc= objetBanc.getBanc();
+		Carte[] tableauBanc = objetBanc.getBanc();
 		System.out.println("Vos cartes de banc sont : ");
-		for (int i = 0; i < joueur.getCarteBancRestante()+1; i++) {
-			System.out.println(tableauBanc[i].getNom()+"\n");
+		for (int i = 0; i < joueur.getCarteBancRestante() + 1; i++) {
+			System.out.println(tableauBanc[i].getNom() + "\n");
 		}
 	}
+
 	public default void afficherEffetCarte(Carte carte) {
 		afficherEffetCartePop(carte);
 		afficherEffetCartePv(carte);
@@ -45,15 +46,23 @@ public interface IAffichage {
 		}
 
 	}
+
 	public default void afficherMsgCartePoseeSurBanc(Carte carte) {
-		System.out.println("La carte " + carte.getNom()+" est ajouté à votre banc");
+		System.out.println("La carte " + carte.getNom() + " est ajouté à votre banc");
 	}
+
 	public default void afficherCarteRemplacerSurBanc() {
-		System.out.println("Il n'y a plus de place sur votre banc veuillez choisir quel carte remplacer : ");
+		System.out.println("Il n'y a plus de place sur votre banc veuillez choisir quel carte remplacer entre 1 et 5: ");
 	}
-	public default void afficherCartePoseeSurZoneAttaque(Carte carte) {
-		System.out.println("La dernière carte jouer sur la zone d'attaque est :  " + carte.getNom());
+
+	public static void afficherCartePoseeSurZoneAttaque(Carte carteZone) {
+		if (carteZone != null) {
+			System.out.println("La dernière carte jouer sur la zone d'attaque est :  " + carteZone.getNom());
+		} else {
+			System.out.println("La zone d'attaque est vide");
+		}
 	}
+
 	public default void afficherEffetCartePv(Carte carte) {
 		int pv = carte.getEffetCarte().getPv();
 		String cible;
@@ -71,7 +80,8 @@ public interface IAffichage {
 		}
 
 	}
-	public default void afficherPiocheVide(){
+
+	public default void afficherPiocheVide() {
 		System.out.println("la pioche est vide");
 	}
 
@@ -86,18 +96,31 @@ public interface IAffichage {
 		System.out.println("Les Vaillant pirates sont : \n");
 	}
 
-	public static void affichageJoueur(int numJoueur, String joueur) {
-		System.out.println(
-				"le joueur " + numJoueur + " se nomme : " + joueur + " et commence avec : \nVie =5 \npopularite = 0\n");
+	public static void donnerStatusJoueur(Joueur joueur) {
+		int vie = joueur.getPv();
+		int pop = joueur.getPopularite();
+		System.out.println(joueur.getNom() + " : " + "\nVie : " + vie + " \npopularité : " + pop);
+		afficherMain(joueur);
+		if (joueur.getBanc() != null) {
+			afficherBanc(joueur);
+		} else {
+			System.out.println("Le banc est vide");
+		}
+		
 	}
-	public static void affichageDonnerJoueur(int num) {
-		System.out.println("Joueur "+num+", donner votre nom"+num);
-	}
-	
 
-	public default void afficherNbTour(int nbTour) {
+	public static void affichageDonnerJoueur(int num) {
+		System.out.println("Joueur " + num + ", donner votre nom");
+	}
+
+	public static void afficherNbTour(int nbTour) {
 		System.out.println("nb tour : " + nbTour + "\n\n");
 	}
+
+	public static void afficherChoisirCarte() {
+		System.out.println("Pour choisir la carte choisissez un nombre entre 1 et 5");
+	}
+
 	
 
 }

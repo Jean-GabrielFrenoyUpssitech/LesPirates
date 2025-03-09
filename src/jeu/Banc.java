@@ -10,9 +10,6 @@ public class Banc extends Zone {
 		super();
 	}
 
-	public void modifCarteNbRestante() {
-		this.cartePosee--;
-	}
 
 	public int getCartePosee() {
 		return cartePosee;
@@ -25,11 +22,14 @@ public class Banc extends Zone {
 	@Override
 	public void ajouterCarte(Carte carte) {
 		cartes[cartePosee + 1] = carte;
+		cartePosee++;
 	}
 
-	public void modifierCarte(Carte carte) {
+	public Carte modifierCarte(Carte carte) {
 		int nb = scaner.nextInt();
+		Carte ancienneCarte=cartes[nb];
 		cartes[nb]=carte;
+		return ancienneCarte;
 
 	}
 

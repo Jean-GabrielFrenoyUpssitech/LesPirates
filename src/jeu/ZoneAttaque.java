@@ -9,7 +9,10 @@ private Carte carteZone;
 		carteZone=carte;		
 	}
 	public void afficherZoneAttaque () {
-	afficherCartePoseeSurZoneAttaque(carteZone);
+	IAffichage.afficherCartePoseeSurZoneAttaque(carteZone);
+	}
+	public Carte getZoneAttaque() {
+		return carteZone;
 	}
 
 }

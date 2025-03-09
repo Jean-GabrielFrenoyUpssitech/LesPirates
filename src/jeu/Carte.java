@@ -22,8 +22,5 @@ public class Carte {
 	public Effets getEffetCarte() {
 		return effetCarte;
 	}
-
-
-	
 	
 }
