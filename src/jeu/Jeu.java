@@ -89,8 +89,8 @@ public class Jeu implements IAffichage {
 			tempCarte = objetPioche.getPiocheTableau()[i];
 			objetPioche.getPiocheTableau()[i] = objetPioche.getPiocheTableau()[numRandom];
 			objetPioche.getPiocheTableau()[numRandom] = tempCarte;
-
-		}
+ 
+		}//dqsdqsdq
 
 		return objetPioche;
 	}
