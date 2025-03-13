@@ -3,16 +3,24 @@ package jeu;
 import affichage.IAffichage;
 
 public class ZoneAttaque extends Zone implements IAffichage {
-private Carte carteZone;
+	private Carte carteZoneAttaque;
+
+	public ZoneAttaque(Carte carte) {
+		super();
+		this.cartes[1] = carte;
+	}
+
 	@Override
 	public void ajouterCarte(Carte carte) {
-		carteZone=carte;		
+		carteZoneAttaque = carte;
 	}
-	public void afficherZoneAttaque () {
-	IAffichage.afficherCartePoseeSurZoneAttaque(carteZone);
+
+	public void afficherZoneAttaque() {
+		IAffichage.afficherCartePoseeSurZoneAttaque(carteZoneAttaque);
 	}
-	public Carte getZoneAttaque() {
-		return carteZone;
+
+	public Carte getCarteZoneAttaque() {
+		return carteZoneAttaque;
 	}
 
 }

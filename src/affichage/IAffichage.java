@@ -8,7 +8,7 @@ public interface IAffichage {
 
 	public static void afficherMain(Joueur joueur) {
 		Carte[] main = joueur.getMain();
-		System.out.println("Vos cartes sont : ");
+		System.out.println("Vos cartes sont : \n\n");
 		for (int i = 0; i < joueur.getNbCarte(); i++) {
 			System.out.println(main[i].getNom() + "\n");
 		}
@@ -17,7 +17,7 @@ public interface IAffichage {
 	public static void afficherBanc(Joueur joueur) {
 		Banc objetBanc = joueur.getBanc();
 		Carte[] tableauBanc = objetBanc.getBanc();
-		System.out.println("Vos cartes de banc sont : ");
+		System.out.println("\nVos cartes de banc sont : \n");
 		for (int i = 0; i < joueur.getCarteBancRestante() + 1; i++) {
 			System.out.println(tableauBanc[i].getNom() + "\n");
 		}
@@ -59,7 +59,7 @@ public interface IAffichage {
 		if (carteZone != null) {
 			System.out.println("La dernière carte jouer sur la zone d'attaque est :  " + carteZone.getNom());
 		} else {
-			System.out.println("La zone d'attaque est vide");
+			System.out.println("\nLa zone d'attaque est vide");
 		}
 	}
 
@@ -104,7 +104,13 @@ public interface IAffichage {
 		if (joueur.getBanc() != null) {
 			afficherBanc(joueur);
 		} else {
-			System.out.println("Le banc est vide");
+			System.out.println("\nLe banc est vide");
+		}
+		if (joueur.getZoneAttaque() == null) {
+			IAffichage.afficherZonneAttaqueVide();
+		} else {
+			IAffichage.afficherCartePoseeSurZoneAttaque(joueur.getZoneAttaque().getCarteZoneAttaque());
+
 		}
 		
 	}
@@ -114,12 +120,29 @@ public interface IAffichage {
 	}
 
 	public static void afficherNbTour(int nbTour) {
-		System.out.println("nb tour : " + nbTour + "\n\n");
+		System.out.println("\n\n______________\nnb tour : " + nbTour + "\n\n");
 	}
 
 	public static void afficherChoisirCarte() {
-		System.out.println("Pour choisir la carte choisissez un nombre entre 1 et 5");
+		System.out.println("\nPour choisir la carte choisissez un nombre entre 1 et 5");
 	}
+
+	public static void afficherBancVide() {
+System.out.println("Le banc est vide");		
+	}
+
+	public static void afficherCarteJouer(String nom) {
+		System.out.println("La carte jouer est : "+ nom);
+	}
+
+	public static void afficherZonneAttaqueVide() {
+System.out.println("La zone d'attaque est vide");		
+	}
+
+	public static void afficherVictoire(Joueur joueur) {
+System.out.println("Le gagnant est : "+ joueur.getNom());		
+	}
+
 
 	
 

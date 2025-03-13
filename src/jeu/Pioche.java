@@ -27,7 +27,7 @@ public void melanger() {
 
 	for (int i = carteRestante; i > 0; i--) {
 		do {
-		nbMelange= random.nextInt(0, carteRestante);
+		nbMelange= random.nextInt(carteRestante+1);
 		}while (nbMelange==i);
 		
         Carte temp = getPiocheTableau()[i];

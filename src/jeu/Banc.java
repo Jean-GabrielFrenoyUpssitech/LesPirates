@@ -6,10 +6,13 @@ public class Banc extends Zone {
 	private Scanner scaner = new Scanner(System.in);
 	private int cartePosee = 0;
 
-	public Banc(Carte[] cartes) {
+	public Banc(Carte carte) {
 		super();
+		this.cartes[1]=carte;
 	}
-
+public void setCartePosee() {
+	cartePosee++;
+}
 
 	public int getCartePosee() {
 		return cartePosee;
@@ -18,10 +21,16 @@ public class Banc extends Zone {
 	public Carte[] getBanc() {
 		return cartes;
 	}
-
+public void afficherBanc() {
+}
 	@Override
 	public void ajouterCarte(Carte carte) {
-		cartes[cartePosee + 1] = carte;
+		if(this.cartePosee ==0) {
+			this.cartes[cartePosee] = carte;
+		}else {
+		this.cartes[cartePosee + 1] = carte;
+		
+		}
 		cartePosee++;
 	}
 

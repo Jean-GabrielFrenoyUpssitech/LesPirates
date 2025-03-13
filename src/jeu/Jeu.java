@@ -1,19 +1,24 @@
 package jeu;
 
+import java.security.SecureRandom;
 import java.util.Scanner;
 
 import affichage.IAffichage;
 
 public class Jeu implements IAffichage {
 	private Pioche pioche;
-	private ZoneAttaque zoneAttaque;
 	private Joueur[] joueurs = new Joueur[2];
 	private static Scanner scaner = new Scanner(System.in);
+	private static SecureRandom random;
 
-	public Jeu(Joueur[] joueurs, Pioche pioche, ZoneAttaque zoneAttaque, Banc banc) {
+	public Jeu(Joueur[] joueurs, Pioche pioche) {
 		this.joueurs = joueurs;
 		this.pioche = pioche;
-		this.zoneAttaque = zoneAttaque;
+		try {
+			random = SecureRandom.getInstanceStrong();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static Joueur donnerJoueur(int numJoueur) {
@@ -24,19 +29,15 @@ public class Jeu implements IAffichage {
 
 	}
 
-	public void initJoueur(Joueur joueur1) {
-
-	}
-
 	public static Pioche initPioche() {
 
 		Pioche piocheObjet = new Pioche();
 		Carte revolteOrganisee = new Carte("Popularité", "Révolte Organisée", Effets.REVOLTEORGANISEE);
 		Carte mainDeFer = new Carte("Popularité", "Révolte Organisée", Effets.MAINDEFER);
 		Carte coupDeSabre = new Carte("PV", "Coup de Sabre", Effets.COUPDESABRE);
-		Carte abordageReussi = new Carte("popularité", "Abordage Réussi", Effets.MAINDEFER);
-		Carte discoursInspirant = new Carte("popularité", "Discours Inspirant", Effets.MAINDEFER);
-
+		Carte abordageReussi = new Carte("Popularité", "Abordage Réussi", Effets.MAINDEFER);
+		Carte discoursInspirant = new Carte("Popularité", "Discours Inspirant", Effets.DISCOURSINSPIRANT);
+		piocheObjet.getPiocheTableau()[0] = mainDeFer;
 		piocheObjet.getPiocheTableau()[1] = mainDeFer;
 		piocheObjet.getPiocheTableau()[2] = mainDeFer;
 		piocheObjet.getPiocheTableau()[3] = mainDeFer;
@@ -80,6 +81,20 @@ public class Jeu implements IAffichage {
 		return piocheObjet;
 	}
 
+	public static Pioche shuffle(Pioche objetPioche) {
+		Carte tempCarte;
+		int numRandom = random.nextInt(39);
+
+		for (int i = 0; i < 40; i++) {
+			tempCarte = objetPioche.getPiocheTableau()[i];
+			objetPioche.getPiocheTableau()[i] = objetPioche.getPiocheTableau()[numRandom];
+			objetPioche.getPiocheTableau()[numRandom] = tempCarte;
+
+		}
+
+		return objetPioche;
+	}
+
 	private static Jeu initJeu() {
 		Joueur joueur1 = donnerJoueur(1);
 		Joueur joueur2 = donnerJoueur(2);
@@ -87,14 +102,15 @@ public class Jeu implements IAffichage {
 		joueurs[0] = joueur1;
 		joueurs[1] = joueur2;
 		Pioche pioche = initPioche();
-		ZoneAttaque zoneAttaque = new ZoneAttaque();
-		Banc banc = null;
-
-		Jeu jeu = new Jeu(joueurs, pioche, zoneAttaque, banc);
+		Jeu jeu = new Jeu(joueurs, pioche);
+		jeu.pioche = shuffle(pioche);
 		return jeu;
 	}
 
-	private Joueur getJoueur(int numJoueur) {
+	public Joueur getJoueur(int numJoueur) {
+		if (numJoueur == 3) {
+			numJoueur = 1;
+		}
 		Joueur joueur = joueurs[numJoueur - 1];
 		return joueur;
 	}
@@ -104,30 +120,20 @@ public class Jeu implements IAffichage {
 	}
 
 	private int getTourJoueur(int nbTour) {
-		int joueur = nbTour / 2;
-		if (Math.floor(joueur) == joueur) {
+		int joueur;
+		if (nbTour % 2 == 0) {
 			joueur = 2;
 		} else {
 			joueur = 1;
 		}
-		return joueur;
-	}
-
-	private ZoneAttaque getZoneAttaque() {
-		return zoneAttaque;
-	}
-	private static void afficherAttaque(Jeu jeu) {
-		if (jeu.getZoneAttaque() != null) {
-		    IAffichage.afficherCartePoseeSurZoneAttaque(jeu.getZoneAttaque().getZoneAttaque());
-		} else {
-		    System.out.println("La zone d'attaque n'est pas encore initialisée.");
-		}
+		return (int) joueur;
 	}
 
 	public static void main(String[] args) {
 		int nbTour = 0;
 		int tourJoueur;
-		Joueur joueur;
+		Joueur joueur = null;
+		Joueur adversaire;
 		IAffichage.afficherNbTour(nbTour);
 		Jeu jeu = initJeu();
 
@@ -142,14 +148,15 @@ public class Jeu implements IAffichage {
 			IAffichage.afficherNbTour(nbTour);
 			tourJoueur = jeu.getTourJoueur(nbTour);
 			joueur = jeu.getJoueur(tourJoueur);
-
+			adversaire = jeu.getJoueur(tourJoueur + 1);
 			joueur.piocher(jeu.getPioche());
+			System.out.println("le joueur possede " + joueur.getNbCarte());
 			IAffichage.donnerStatusJoueur(jeu.getJoueur(tourJoueur));
-			afficherAttaque(jeu);
-			System.out.println("La zone d'attaque n'est pas encore initialisée.");
+
+			joueur.jouerCarte(adversaire);
 			
-			joueur.jouerCarte();
 		}
+		IAffichage.afficherVictoire(joueur);
 
 	}
 
