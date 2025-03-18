@@ -1,39 +1,35 @@
 package jeu;
 
 public enum Effets {
-MAINDEFER(2,"du joueur",-1,"du joueur"),REVOLTEORGANISEE(1,"du joueur",0,"du joueur"),DISCOURSINSPIRANT(1,"du joueur",0,"du joueur"),ABORDAGEREUSSI(1,"du joueur",0,"du joueur"),COUPDESABRE(0,"du joueur",-2,"de l'adversaire");
+MAINDEFER("Main de Fer","La main de fer fait...","Popularité"),REVOLTEORGANISEE("Revolte Organisé", "Descritpion..","Popularité"),DISCOURSINSPIRANT("Discours Inspirant","Descritpion..","Popularité"),ABORDAGEREUSSI("Abordage Réussi","Descrption..","Popularité"),COUPDESABRE("Coup de Sabre","Description","PV");
 
-private int pop;
-private int pv;
-private String cibleEffetPop;
-private String cibleEffetPv;
+
+private String nom;
+private String description;
+private String type;
 
 	
-private Effets(int pop,String cibleEffetPop, int pv,String cibleEffetPv) {
-	this.pop = pop;
-	this.cibleEffetPop=cibleEffetPop;
-	this.pv = pv;
-	this.cibleEffetPv=cibleEffetPv;
+private Effets(String nom,String description, String type) {
+	this.nom=nom;
+	this.description=description;
+	this.type=type;
 }
 
 
-public int getPop() {
-	return pop;
+public String getDescription() {
+	return description;
 }
 
-public int getPv() {
-	return pv;
-}
-
-
-public String getCibleEffetPop() {
-	return cibleEffetPop;
+public String getNom() {
+	return nom;
 }
 
 
-public String getCibleEffetPv() {
-	return cibleEffetPv;
+public String getType() {
+	return type;
 }
+
+
 
 
 }

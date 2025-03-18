@@ -1,26 +1,16 @@
 package jeu;
 
-public class Carte {
-	private String type;
-	private String nom;
+public abstract class  Carte {
 	private Effets effetCarte;
 
-	public Carte(String type, String nom, Effets effet) {
-		this.type = type;
-		this.nom = nom;
+	public Carte(Effets effet) {
 		this.effetCarte = effet;
 	}
 
-	public String getType() {
-		return type;
-	}
 
-	public String getNom() {
-		return nom;
-	}
-
-	public Effets getEffetCarte() {
+	protected Effets getEffetCarte() {
 		return effetCarte;
 	}
-	
+	//MAINDEFER(2,"du joueur",-1,"du joueur"),REVOLTEORGANISEE(1,"du joueur",0,"du joueur"),DISCOURSINSPIRANT(1,"du joueur",0,"du joueur"),ABORDAGEREUSSI(1,"du joueur",0,"du joueur"),COUPDESABRE(0,"du joueur",-2,"de l'adversaire");
+	protected abstract void appliquerEffet();
 }
