@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 import jeu.Carte;
 import jeu.Joueur;
-import jeu.Effets;
+import jeu.Description;
 
 public class AffichagePreview {
 

@@ -10,6 +10,7 @@ public class Jeu implements IAffichage {
 	private Joueur[] joueurs = new Joueur[2];
 	private static Scanner scaner = new Scanner(System.in);
 	private static SecureRandom random;
+	
 
 	public Jeu(Joueur[] joueurs, Pioche pioche) {
 		this.joueurs = joueurs;
@@ -24,19 +25,18 @@ public class Jeu implements IAffichage {
 	public static Joueur donnerJoueur(int numJoueur) {
 		IAffichage.affichageDonnerJoueur(numJoueur);
 		String nom = scaner.next();
-		Joueur joueur = new Joueur(nom);
-		return joueur;
+		return new Joueur(nom);
 
 	}
 
 	public static Pioche initPioche() {
 
 		Pioche piocheObjet = new Pioche();
-		Carte revolteOrganisee = new Carte("Popularité", "Révolte Organisée", Effets.REVOLTEORGANISEE);
-		Carte mainDeFer = new Carte("Popularité", "Révolte Organisée", Effets.MAINDEFER);
-		Carte coupDeSabre = new Carte("PV", "Coup de Sabre", Effets.COUPDESABRE);
-		Carte abordageReussi = new Carte("Popularité", "Abordage Réussi", Effets.MAINDEFER);
-		Carte discoursInspirant = new Carte("Popularité", "Discours Inspirant", Effets.DISCOURSINSPIRANT);
+		Carte revolteOrganisee = new RevolteOrganisee(Description.REVOLTEORGANISEE);
+		Carte mainDeFer = new MainDeFer(Description.MAINDEFER);
+		Carte coupDeSabre = new CoupDeSabre(Description.COUPDESABRE);
+		Carte abordageReussi = new AbordageReussi(Description.MAINDEFER);
+		Carte discoursInspirant = new DiscoursInspirant(Description.DISCOURSINSPIRANT);
 		piocheObjet.getPiocheTableau()[0] = mainDeFer;
 		piocheObjet.getPiocheTableau()[1] = mainDeFer;
 		piocheObjet.getPiocheTableau()[2] = mainDeFer;

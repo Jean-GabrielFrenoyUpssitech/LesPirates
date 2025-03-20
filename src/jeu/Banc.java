@@ -1,43 +1,34 @@
 package jeu;
 
-import java.util.Scanner;
-
-public class Banc extends Zone {
-	private Scanner scaner = new Scanner(System.in);
+public class Banc {
+	protected Carte[] banc = new Carte[5];
 	private int cartePosee = 0;
-
-	public Banc(Carte carte) {
-		super();
-		this.cartes[1]=carte;
-	}
-public void setCartePosee() {
-	cartePosee++;
+public Banc(Carte carte) {
+	this.banc[1]=carte;
 }
+	public void setCartePosee() {
+		cartePosee++;
+	}
 
 	public int getCartePosee() {
 		return cartePosee;
 	}
 
 	public Carte[] getBanc() {
-		return cartes;
+		return banc;
 	}
-public void afficherBanc() {
-}
-	@Override
+
 	public void ajouterCarte(Carte carte) {
-		if(this.cartePosee ==0) {
-			this.cartes[cartePosee] = carte;
-		}else {
-		this.cartes[cartePosee + 1] = carte;
 		
-		}
+			this.banc[cartePosee] = carte;
+
+		
 		cartePosee++;
 	}
 
-	public Carte modifierCarte(Carte carte) {
-		int nb = scaner.nextInt();
-		Carte ancienneCarte=cartes[nb];
-		cartes[nb]=carte;
+	public Carte modifierCarte(Carte carte, int nb) {
+		Carte ancienneCarte = banc[nb];
+		this.banc[nb] = carte;
 		return ancienneCarte;
 
 	}

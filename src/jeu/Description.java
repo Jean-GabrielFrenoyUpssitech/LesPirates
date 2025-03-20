@@ -1,23 +1,23 @@
 package jeu;
 
-public enum Effets {
-MAINDEFER("Main de Fer","La main de fer fait...","Popularité"),REVOLTEORGANISEE("Revolte Organisé", "Descritpion..","Popularité"),DISCOURSINSPIRANT("Discours Inspirant","Descritpion..","Popularité"),ABORDAGEREUSSI("Abordage Réussi","Descrption..","Popularité"),COUPDESABRE("Coup de Sabre","Description","PV");
+public enum Description {
+MAINDEFER("Main de Fer","La main de fer fait...","PopularitÃ©"),REVOLTEORGANISEE("Revolte OrganisÃ©", "Descritpion..","PopularitÃ©"),DISCOURSINSPIRANT("Discours Inspirant","Descritpion..","PopularitÃ©"),ABORDAGEREUSSI("Abordage Rï¿½ussi","Descrption..","PopularitÃ©"),COUPDESABRE("Coup de Sabre","Description","PV");
 
 
 private String nom;
-private String description;
+private String descriptionCarte;
 private String type;
 
 	
-private Effets(String nom,String description, String type) {
+private Description(String nom,String description, String type) {
 	this.nom=nom;
-	this.description=description;
+	this.descriptionCarte=description;
 	this.type=type;
 }
 
 
 public String getDescription() {
-	return description;
+	return descriptionCarte;
 }
 
 public String getNom() {

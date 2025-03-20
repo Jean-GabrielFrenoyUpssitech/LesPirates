@@ -19,7 +19,7 @@ public void pioche() {
 
 
 
-public int getCarteRestante() {
+public int getCarteRestantePioche() {
 	return carteRestante;
 }
 public void melanger() {
