@@ -7,7 +7,7 @@ public class ZoneAttaque implements IAffichage {
 
 	public ZoneAttaque(Carte carte) {
 		super();
-	
+	this.carteZoneAttaque=carte;
 	}
 
 	

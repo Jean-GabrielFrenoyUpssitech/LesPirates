@@ -10,7 +10,6 @@ public class Jeu implements IAffichage {
 	private Joueur[] joueurs = new Joueur[2];
 	private static Scanner scaner = new Scanner(System.in);
 	private static SecureRandom random;
-	
 
 	public Jeu(Joueur[] joueurs, Pioche pioche) {
 		this.joueurs = joueurs;
@@ -31,70 +30,51 @@ public class Jeu implements IAffichage {
 
 	public static Pioche initPioche() {
 
-		Pioche piocheObjet = new Pioche();
+		Carte[] cartes = initCartes();
+		Pioche piocheObjet = new Pioche(cartes[0]);
+
+		int[] quantites = { 5, 5, 5, 5, 5, 5, 5, 5 };
+		int numTableauPiocheActuel = 0;
+		int nbCarteDifferentes = 8;
+		for (int i = 0; i < nbCarteDifferentes; i++) {
+			for (int j = 0; j < quantites[i]; j++) {
+				piocheObjet.getPiocheTableau()[numTableauPiocheActuel] = cartes[i];
+				numTableauPiocheActuel++;
+
+			}
+
+		}
+
+		return piocheObjet;
+	}
+
+	private static Carte[] initCartes() {
 		Carte revolteOrganisee = new RevolteOrganisee(Description.REVOLTEORGANISEE);
 		Carte mainDeFer = new MainDeFer(Description.MAINDEFER);
 		Carte coupDeSabre = new CoupDeSabre(Description.COUPDESABRE);
 		Carte abordageReussi = new AbordageReussi(Description.ABORDAGEREUSSI);
 		Carte discoursInspirant = new DiscoursInspirant(Description.DISCOURSINSPIRANT);
 		Carte blocageDefensif = new BlocageDéfensif(Description.BLOCAGEDEFENSIF);
-		piocheObjet.getPiocheTableau()[0] = mainDeFer;
-		piocheObjet.getPiocheTableau()[1] = mainDeFer;
-		piocheObjet.getPiocheTableau()[2] = mainDeFer;
-		piocheObjet.getPiocheTableau()[3] = mainDeFer;
-		piocheObjet.getPiocheTableau()[4] = blocageDefensif;
-		piocheObjet.getPiocheTableau()[5] = mainDeFer;
-		piocheObjet.getPiocheTableau()[6] = blocageDefensif;
-		piocheObjet.getPiocheTableau()[7] = mainDeFer;
-		piocheObjet.getPiocheTableau()[8] = mainDeFer;
-		piocheObjet.getPiocheTableau()[9] = revolteOrganisee;
-		piocheObjet.getPiocheTableau()[10] = revolteOrganisee;
-		piocheObjet.getPiocheTableau()[11] = revolteOrganisee;
-		piocheObjet.getPiocheTableau()[12] = revolteOrganisee;
-		piocheObjet.getPiocheTableau()[13] = revolteOrganisee;
-		piocheObjet.getPiocheTableau()[14] = revolteOrganisee;
-		piocheObjet.getPiocheTableau()[15] = revolteOrganisee;
-		piocheObjet.getPiocheTableau()[16] = blocageDefensif;
-		piocheObjet.getPiocheTableau()[17] = revolteOrganisee;
-		piocheObjet.getPiocheTableau()[18] = revolteOrganisee;
-		piocheObjet.getPiocheTableau()[19] = revolteOrganisee;
-		piocheObjet.getPiocheTableau()[20] = blocageDefensif;
-		piocheObjet.getPiocheTableau()[21] = revolteOrganisee;
-		piocheObjet.getPiocheTableau()[22] = coupDeSabre;
-		piocheObjet.getPiocheTableau()[23] = coupDeSabre;
-		piocheObjet.getPiocheTableau()[24] = coupDeSabre;
-		piocheObjet.getPiocheTableau()[25] = coupDeSabre;
-		piocheObjet.getPiocheTableau()[26] = abordageReussi;
-		piocheObjet.getPiocheTableau()[27] = abordageReussi;
-		piocheObjet.getPiocheTableau()[28] = abordageReussi;
-		piocheObjet.getPiocheTableau()[29] = abordageReussi;
-		piocheObjet.getPiocheTableau()[30] = abordageReussi;
-		piocheObjet.getPiocheTableau()[31] = abordageReussi;
-		piocheObjet.getPiocheTableau()[32] = discoursInspirant;
-		piocheObjet.getPiocheTableau()[33] = discoursInspirant;
-		piocheObjet.getPiocheTableau()[34] = blocageDefensif;
-		piocheObjet.getPiocheTableau()[35] = discoursInspirant;
-		piocheObjet.getPiocheTableau()[36] = discoursInspirant;
-		piocheObjet.getPiocheTableau()[37] = discoursInspirant;
-		piocheObjet.getPiocheTableau()[38] = coupDeSabre;
-		piocheObjet.getPiocheTableau()[39] = coupDeSabre;
-
-		return piocheObjet;
+		Carte echangeForcee = new EchangeForce(Description.ECHANGEFORCE);
+		Carte planMachiavelique = new PlanMachiavelique(Description.PLANMACHIAVELIQUE);
+		Carte[] cartes = { blocageDefensif, mainDeFer, revolteOrganisee, coupDeSabre, abordageReussi, discoursInspirant,
+				echangeForcee, planMachiavelique };
+		return cartes;
 	}
 
 	public static Pioche shuffle(Pioche objetPioche) {
 		Carte tempCarte;
 		int numRandom = random.nextInt(39);
-
-		for (int i = 0; i < 40; i++) {
-			tempCarte = objetPioche.getPiocheTableau()[i];
-			objetPioche.getPiocheTableau()[i] = objetPioche.getPiocheTableau()[numRandom];
-			objetPioche.getPiocheTableau()[numRandom] = tempCarte;
- 
+		for (int j = 0; j < 3; j++) {
+			for (int i = 0; i < 40; i++) {
+				tempCarte = objetPioche.getPiocheTableau()[i];
+				objetPioche.getPiocheTableau()[i] = objetPioche.getPiocheTableau()[numRandom];
+				objetPioche.getPiocheTableau()[numRandom] = tempCarte;
+				numRandom = random.nextInt(39);
+			}
 		}
-
 		return objetPioche;
-	}
+	} 
 
 	private static Jeu initJeu() {
 		Joueur joueur1 = donnerJoueur(1);
@@ -103,8 +83,11 @@ public class Jeu implements IAffichage {
 		joueurs[0] = joueur1;
 		joueurs[1] = joueur2;
 		Pioche pioche = initPioche();
+
 		Jeu jeu = new Jeu(joueurs, pioche);
+
 		jeu.pioche = shuffle(pioche);
+
 		return jeu;
 	}
 
@@ -142,18 +125,18 @@ public class Jeu implements IAffichage {
 
 		jeu.getJoueur(1).initJoueur(jeu.getPioche());
 		jeu.getJoueur(2).initJoueur(jeu.getPioche());
-		while (jeu.getJoueur(1).getPv() > 0 && jeu.getJoueur(2).getPv() > 0 && jeu.getJoueur(1).getPopularite() < 5
-				&& jeu.getJoueur(2).getPopularite() < 5) {
+		while (jeu.getJoueur(1).getPv() > 0 && jeu.getJoueur(2).getPv() > 0 && jeu.getJoueur(1).getPopularite() < 6
+				&& jeu.getJoueur(2).getPopularite() < 6) {
 			nbTour++;
 			IAffichage.afficherNbTour(nbTour);
 			tourJoueur = jeu.getTourJoueur(nbTour);
 			joueur = jeu.getJoueur(tourJoueur);
 			adversaire = jeu.getJoueur(tourJoueur + 1);
 			joueur.piocher(jeu.getPioche());
-			IAffichage.donnerStatusJoueur(joueur,adversaire);
+			IAffichage.donnerStatusJoueur(joueur, adversaire);
 
 			joueur.jouerCarte(adversaire);
-			
+
 		}
 		IAffichage.afficherVictoire(joueur);
 

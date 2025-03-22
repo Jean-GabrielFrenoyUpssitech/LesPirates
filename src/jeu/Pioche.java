@@ -8,6 +8,13 @@ private Carte[] piocheTableau=new Carte[40];
 private int carteRestante=39;
 private SecureRandom random;
 
+public Pioche(Carte carte) {
+this.piocheTableau[0]=carte;
+}
+
+
+
+
 public void pioche() {
 	try {
 		random = SecureRandom.getInstanceStrong();
@@ -43,9 +50,9 @@ return getPiocheTableau();
 }
 
 
-public Carte donnerCarte() {
-	
-	Carte carte=this.getPiocheTableau()[carteRestante];
+public Carte donnerCarte(Pioche objetPioche) {
+
+	Carte carte=objetPioche.getPiocheTableau()[carteRestante];
 	carteRestante--;
 	return carte;
 

@@ -9,10 +9,12 @@ public interface IAffichage {
 	public static void afficherMain(Joueur joueur) {
 		Carte[] main = joueur.getMain();
 		Carte carte;
+		int numCarte=1;
 		System.out.println("\nVos cartes sont : \n\n");
 		for (int i = 0; i < joueur.getNbCarte(); i++) {
 			carte=main[i];
-			System.out.println(carte.getDescription().getNom() + " - effet : "+carte.getDescription().getDescription()+"\n");
+			System.out.println("("+numCarte+")\t"+carte.getDescription().getNom() + " - effet : "+carte.getDescription().getDescription()+"\n");
+			numCarte++;
 		}
 	}
 
@@ -36,7 +38,7 @@ public interface IAffichage {
 
 	public default void afficherCarteRemplacerSurBanc() {
 		System.out
-				.println("Il n'y a plus de place sur votre banc veuillez choisir quel carte remplacer entre 1 et 5: ");
+				.println("\nIl n'y a plus de place sur votre banc veuillez choisir quel carte remplacer entre 1 et 5: ");
 	}
 
 	public static void afficherCartePoseeSurZoneAttaque(Carte carteZoneAttaque) {
@@ -143,6 +145,9 @@ public interface IAffichage {
 
 	public static void affichageBlocageDefensif() {
 		System.out.println("");
+	}
+	public static void affichageEchangeForce() {
+		System.out.println("Abrakadabra vos mains sont inversé");
 	}
 
 }
