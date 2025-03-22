@@ -10,8 +10,9 @@ public class PlanMachiavelique extends Carte {
 	protected void appliquerEffet(Joueur joueur, Joueur adversaire) {
 		if (adversaire.getPv() > 3) {
 			adversaire.modifierVie(modifVie);
-			joueur.modifierPop(modifPop);
 		}
+		joueur.modifierPop(modifPop);
+
 	}
 
 }

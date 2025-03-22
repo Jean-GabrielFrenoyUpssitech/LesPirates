@@ -10,15 +10,18 @@ public class Jeu implements IAffichage {
 	private Joueur[] joueurs = new Joueur[2];
 	private static Scanner scaner = new Scanner(System.in);
 	private static SecureRandom random;
-
-	public Jeu(Joueur[] joueurs, Pioche pioche) {
-		this.joueurs = joueurs;
-		this.pioche = pioche;
+	static {
 		try {
 			random = SecureRandom.getInstanceStrong();
 		} catch (Exception e) {
 			e.printStackTrace();
+			random = new SecureRandom();
 		}
+	}
+
+	public Jeu(Joueur[] joueurs, Pioche pioche) {
+		this.joueurs = joueurs;
+		this.pioche = pioche;
 	}
 
 	public static Joueur donnerJoueur(int numJoueur) {
@@ -54,12 +57,12 @@ public class Jeu implements IAffichage {
 		Carte coupDeSabre = new CoupDeSabre(Description.COUPDESABRE);
 		Carte abordageReussi = new AbordageReussi(Description.ABORDAGEREUSSI);
 		Carte discoursInspirant = new DiscoursInspirant(Description.DISCOURSINSPIRANT);
-		Carte blocageDefensif = new BlocageDéfensif(Description.BLOCAGEDEFENSIF);
+		Carte blocageDefensif = new BlocageDefensif(Description.BLOCAGEDEFENSIF);
 		Carte echangeForcee = new EchangeForce(Description.ECHANGEFORCE);
 		Carte planMachiavelique = new PlanMachiavelique(Description.PLANMACHIAVELIQUE);
-		Carte[] cartes = { blocageDefensif, mainDeFer, revolteOrganisee, coupDeSabre, abordageReussi, discoursInspirant,
-				echangeForcee, planMachiavelique };
-		return cartes;
+
+		return new Carte[] { blocageDefensif, mainDeFer, revolteOrganisee, coupDeSabre, abordageReussi,
+				discoursInspirant, echangeForcee, planMachiavelique };
 	}
 
 	public static Pioche shuffle(Pioche objetPioche) {
@@ -74,7 +77,7 @@ public class Jeu implements IAffichage {
 			}
 		}
 		return objetPioche;
-	} 
+	}
 
 	private static Jeu initJeu() {
 		Joueur joueur1 = donnerJoueur(1);
@@ -116,12 +119,12 @@ public class Jeu implements IAffichage {
 		int nbTour = 0;
 		int tourJoueur;
 		Joueur joueur = null;
-		Joueur adversaire;
+		Joueur adversaire = null;
 		IAffichage.afficherNbTour(nbTour);
 		Jeu jeu = initJeu();
 
 		IAffichage.donnerContexte();
-		IAffichage.donnerRegles("regle");
+		IAffichage.donnerRegles();
 
 		jeu.getJoueur(1).initJoueur(jeu.getPioche());
 		jeu.getJoueur(2).initJoueur(jeu.getPioche());
@@ -138,7 +141,7 @@ public class Jeu implements IAffichage {
 			joueur.jouerCarte(adversaire);
 
 		}
-		IAffichage.afficherVictoire(joueur);
+		IAffichage.afficherVictoire(joueur,adversaire);
 
 	}
 

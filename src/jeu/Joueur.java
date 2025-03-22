@@ -51,20 +51,16 @@ public class Joueur implements IAffichage {
 
 	}
 
-	public int getNbCarte() {
+	public int getNbCarteEnMain() {
 
 		return nbCarteEnMain;
 	}
 
 	public void piocher(Pioche objetPioche) {
-		// piocher la premier carte de la pioche donc dernier element et c'est ok car
-		// t'as déjà melanger
 		while (this.nbCarteEnMain < 5) {
 			Carte carte = objetPioche.donnerCarte(objetPioche);
-
 			if (objetPioche.getCarteRestantePioche() < 1) {
 				afficherPiocheVide();
-
 			} else {
 				if (this.nbCarteEnMain == 0) {
 					this.main[this.nbCarteEnMain] = carte;
@@ -73,7 +69,6 @@ public class Joueur implements IAffichage {
 					this.main[this.nbCarteEnMain] = carte;
 					if (this.nbCarteEnMain < 5) {
 					}
-
 				}
 				this.nbCarteEnMain++;
 
@@ -100,16 +95,19 @@ public class Joueur implements IAffichage {
 
 	public void jouerCarteSurBanc(Carte carte, Joueur adversaire) {
 		if (this.banc.getCartePoseeBanc() < 5) {
-
 			this.banc.ajouterCarte(carte);
-		}
+		} else {
+			int nbCarteRemplacer;
+			do {
+				afficherCarteRemplacerSurBanc();
+				nbCarteRemplacer = scaner.nextInt();
+				if (nbCarteRemplacer < 1 || nbCarteRemplacer > 5) {
+					IAffichage.afficherChiffreTropGrand();
+				}
+			} while (nbCarteRemplacer < 1 || nbCarteRemplacer > 5);
 
-		else {
-			afficherCarteRemplacerSurBanc();
-			int nbCarteRemplacer = scaner.nextInt();
 			Carte ancienneCarte = this.banc.modifierCarte(carte, nbCarteRemplacer - 1);
 			ancienneCarte.retirerEffet(this);
-
 		}
 	}
 
@@ -118,16 +116,27 @@ public class Joueur implements IAffichage {
 	}
 
 	public void jouerCarte(Joueur adversaire) {
-		IAffichage.afficherChoisirCarte();
-		int nbCarte = scaner.nextInt();
-		Carte carte = this.getMain()[nbCarte - 1];
-		this.main[nbCarte - 1] = null;
+		int nbCarteAJouer = getNbCarteAJouer();
+		Carte carte = this.getMain()[nbCarteAJouer - 1];
+		this.main[nbCarteAJouer - 1] = null;
 		this.nbCarteEnMain--;
-		this.trierCarte(this, nbCarte);
+		this.trierCarte(this, nbCarteAJouer);
 		IAffichage.afficherCarteJouer(carte.getDescription().getNom());
-
 		String typeCarte = carte.getDescription().getType();
+		placerCarteSurZone(carte,adversaire,typeCarte);
+		String nomDerniereCarte = null;
+		if (adversaire.derniereCarteJouer != null) {
+			nomDerniereCarte = adversaire.derniereCarteJouer.getDescription().getNom();
+		}
+		if ("Blocage Défensif".equals(nomDerniereCarte)) {
+			IAffichage.affichageBlocageDefensif();
+		} else {
+			carte.appliquerEffet(this, adversaire);
+		}
+		this.derniereCarteJouer = carte;
+	}
 
+	private void placerCarteSurZone(Carte carte, Joueur adversaire,String typeCarte) {
 		switch (typeCarte) {
 		case "Popularité":
 			if (this.banc == null) {
@@ -142,24 +151,26 @@ public class Joueur implements IAffichage {
 			jouerCarteSurZoneAttaque(carte, adversaire);
 			break;
 		default:
-			IAffichage.afficherCarteMalPoser();
+			if (!"Echange Forcé".equals(carte.getDescription().getNom())) {
+				IAffichage.afficherCarteMalPoser();
+			}else {
+				IAffichage.afficherEffetEchangeForce();
+
+			}
 			break;
+		}		
+	}
 
-		}
-		String nomDerniereCarte = null;
-
-		if (adversaire.derniereCarteJouer != null) {
-			nomDerniereCarte = adversaire.derniereCarteJouer.getDescription().getNom();
-		}
-
-		if ("Blocage Défensif".equals(nomDerniereCarte)) {
-			IAffichage.affichageBlocageDefensif();
-		} else {
-			carte.appliquerEffet(this, adversaire);
-		}
-
-		this.derniereCarteJouer = carte;
-
+	private int getNbCarteAJouer() {
+		int nbCarte;
+		do {
+			IAffichage.afficherChoisirCarte();
+			nbCarte = scaner.nextInt();
+			if (nbCarte < 1 || nbCarte > 5) {
+				IAffichage.afficherChiffreTropGrand();
+			}
+		} while (nbCarte < 1 || nbCarte > 5);
+		return nbCarte;
 	}
 
 	public Joueur initJoueur(Pioche objetPioche) {

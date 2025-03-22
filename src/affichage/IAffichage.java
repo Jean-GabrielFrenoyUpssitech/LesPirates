@@ -9,11 +9,13 @@ public interface IAffichage {
 	public static void afficherMain(Joueur joueur) {
 		Carte[] main = joueur.getMain();
 		Carte carte;
-		int numCarte=1;
+		int numCarte = 1;
 		System.out.println("\nVos cartes sont : \n\n");
-		for (int i = 0; i < joueur.getNbCarte(); i++) {
-			carte=main[i];
-			System.out.println("("+numCarte+")\t"+carte.getDescription().getNom() + " - effet : "+carte.getDescription().getDescription()+"\n");
+		for (int i = 0; i < joueur.getNbCarteEnMain(); i++) {
+			carte = main[i];
+			System.out.println("(" + numCarte + ")\t" + carte.getDescription().getNom() + " - effet : "
+					+ carte.getDescription().getDescription() + " Type Carte : " + carte.getDescription().getType()
+					+ "\n");
 			numCarte++;
 		}
 	}
@@ -37,8 +39,8 @@ public interface IAffichage {
 	}
 
 	public default void afficherCarteRemplacerSurBanc() {
-		System.out
-				.println("\nIl n'y a plus de place sur votre banc veuillez choisir quel carte remplacer entre 1 et 5: ");
+		System.out.println(
+				"\nIl n'y a plus de place sur votre banc veuillez choisir quel carte remplacer entre 1 et 5: ");
 	}
 
 	public static void afficherCartePoseeSurZoneAttaque(Carte carteZoneAttaque) {
@@ -59,10 +61,9 @@ public interface IAffichage {
 				"Bienvenue dans le monde merveilleux de ONE PIECE... \nGold roger : Mon trésors ? Je vous le laisse Je l'ai laisser quelque pars dans ce monde.Trouver le !\n\n");
 	}
 
-	public static void donnerRegles(String regles) {
-		System.out.println("Pour gagner suivre les règles : \n\n" + regles + "\n\n");
-
-		System.out.println("Les Vaillant pirates sont : \n");
+	public static void donnerRegles() {
+		System.out.println(
+				"Pour gagner suivre les règles : \n\n Au début de la partie chaque joueur commence avec 5 pv et 0 de points de popularité. Pour gagné il faut soit obtenir 5 points de popularité soit que les pv de l'adversaire tombe à 0. Au début de chaque tour un joueur pioche puis il joue une carte au maximum. Le joueur est obligé de jouer. Au tour suivant l'autre joueur fait pareil\n\n");
 	}
 
 	public static void donnerStatusJoueur(Joueur joueur, Joueur adversaire) {
@@ -71,21 +72,13 @@ public interface IAffichage {
 		int vieA = adversaire.getPv();
 		int popA = adversaire.getPopularite();
 		afficherSeparation("");
-		System.out.println(
-				"Status adversaire (" + adversaire.getNom() + ") : " + "\nVie : " + vieA + " \npopularité : " + popA);
-		if (adversaire.getBanc() != null) {
-			afficherBanc(adversaire);
-		} else {
-			afficherBancVide();
-		}
-		if (adversaire.getZoneAttaque() == null) {
-			IAffichage.afficherZonneAttaqueVide();
-		} else {
-			IAffichage.afficherCartePoseeSurZoneAttaque(adversaire.getZoneAttaque().getCarteZoneAttaque());
-
-		}
+		donnerStatusSubAdversaire(adversaire, vieA, popA);
 		afficherSeparation("\n");
+		donnerStatusSubJoueur(joueur, vieJ, popJ);
 
+	}
+
+	public static void donnerStatusSubJoueur(Joueur joueur, int vieJ, int popJ) {
 		System.out
 				.println("Status Joueur (" + joueur.getNom() + ") : " + "\nVie : " + vieJ + " \npopularité : " + popJ);
 		afficherMain(joueur);
@@ -100,11 +93,26 @@ public interface IAffichage {
 			IAffichage.afficherCartePoseeSurZoneAttaque(joueur.getZoneAttaque().getCarteZoneAttaque());
 
 		}
+	}
 
+	public static void donnerStatusSubAdversaire(Joueur adversaire, int vieA, int popA) {
+		System.out.println(
+				"Status adversaire (" + adversaire.getNom() + ") : " + "\nVie : " + vieA + " \npopularité : " + popA);
+		if (adversaire.getBanc() != null) {
+			afficherBanc(adversaire);
+		} else {
+			afficherBancVide();
+		}
+		if (adversaire.getZoneAttaque() == null) {
+			IAffichage.afficherZonneAttaqueVide();
+		} else {
+			IAffichage.afficherCartePoseeSurZoneAttaque(adversaire.getZoneAttaque().getCarteZoneAttaque());
+
+		}
 	}
 
 	public static void afficherSeparation(String string) {
-		System.out.println("--------------"+string);
+		System.out.println("--------------" + string);
 	}
 
 	public static void affichageDonnerJoueur(int num) {
@@ -116,7 +124,7 @@ public interface IAffichage {
 	}
 
 	public static void afficherChoisirCarte() {
-		System.out.println("\nPour choisir la carte choisissez un nombre entre 1 et 5");
+		System.out.println("\nVeuillez choisir un nombre entre 1 et 5, correspondant à vous cartes");
 	}
 
 	public static void afficherBancVide() {
@@ -131,8 +139,24 @@ public interface IAffichage {
 		System.out.println("La zone d'attaque est vide");
 	}
 
-	public static void afficherVictoire(Joueur joueur) {
-		System.out.println("Le gagnant est : " + joueur.getNom());
+	/* Determination du gagnant */
+	public static void afficherVictoire(Joueur joueur, Joueur adversaire) {
+		String gagnant;
+		String type;
+		if (joueur.getPv() < 1) {
+			gagnant = joueur.getNom();
+			type = "assassinat";
+		} else if (adversaire.getPv() < 1) {
+			gagnant = adversaire.getNom();
+			type = "assassinat";
+		} else if (joueur.getPopularite() < 1) {
+			gagnant = joueur.getNom();
+			type = "popularité";
+		} else {
+			gagnant = adversaire.getNom();
+			type = "popularité";
+		}
+		System.out.println("Le gagnant est : " + gagnant + " victoire par " + type);
 	}
 
 	public static void afficherErreurSwitchcase() {
@@ -144,10 +168,19 @@ public interface IAffichage {
 	}
 
 	public static void affichageBlocageDefensif() {
-		System.out.println("");
+		System.out.println("Je suis invincible !");
 	}
+
 	public static void affichageEchangeForce() {
-		System.out.println("Abrakadabra vos mains sont inversé");
+		System.out.println("\nAbrakadabra vos mains sont inversé");
+	}
+
+	public static void afficherChiffreTropGrand() {
+		System.out.println("****  Erreur vous devez entrer un entier positif entre 1 et 5 ****");
+	}
+
+	public static void afficherEffetEchangeForce() {
+		System.out.println("Ce fut un tour bien inutile");
 	}
 
 }
