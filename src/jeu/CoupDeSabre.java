@@ -8,7 +8,7 @@ public class CoupDeSabre extends Carte {
 
 	@Override
 	protected void appliquerEffet(Joueur joueur, Joueur adversaire) {
-		joueur.modifierVie(modifVie);
+		adversaire.modifierVie(modifVie);
 		
 	}
 

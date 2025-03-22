@@ -1,7 +1,7 @@
 package jeu;
 
 public enum Description {
-MAINDEFER("Main de Fer","La main de fer fait...","Popularité"),REVOLTEORGANISEE("Revolte Organisé", "Descritpion..","Popularité"),DISCOURSINSPIRANT("Discours Inspirant","Descritpion..","Popularité"),ABORDAGEREUSSI("Abordage R�ussi","Descrption..","Popularité"),COUPDESABRE("Coup de Sabre","Description","PV");
+MAINDEFER("Main de Fer","La main de fer fait...","Popularité"),REVOLTEORGANISEE("Revolte Organisé", "Descritpion..","Popularité"),DISCOURSINSPIRANT("Discours Inspirant","Descritpion..","Popularité"),ABORDAGEREUSSI("Abordage R�ussi","Descrption..","Popularité"),COUPDESABRE("Coup de Sabre","Description","PV"),BLOCAGEDEFENSIF("Blocage Défensif","Descrption","Stratégie");
 
 
 private String nom;

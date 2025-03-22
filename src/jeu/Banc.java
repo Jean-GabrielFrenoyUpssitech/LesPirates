@@ -2,16 +2,16 @@ package jeu;
 
 public class Banc {
 	protected Carte[] banc = new Carte[5];
-	private int cartePosee = 0;
+	private int cartePoseeBanc = 0;
 public Banc(Carte carte) {
 	this.banc[1]=carte;
 }
 	public void setCartePosee() {
-		cartePosee++;
+		cartePoseeBanc++;
 	}
 
-	public int getCartePosee() {
-		return cartePosee;
+	public int getCartePoseeBanc() {
+		return cartePoseeBanc;
 	}
 
 	public Carte[] getBanc() {
@@ -20,10 +20,10 @@ public Banc(Carte carte) {
 
 	public void ajouterCarte(Carte carte) {
 		
-			this.banc[cartePosee] = carte;
+			this.banc[cartePoseeBanc] = carte;
 
 		
-		cartePosee++;
+		cartePoseeBanc++;
 	}
 
 	public Carte modifierCarte(Carte carte, int nb) {

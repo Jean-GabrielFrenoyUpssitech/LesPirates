@@ -8,9 +8,11 @@ public interface IAffichage {
 
 	public static void afficherMain(Joueur joueur) {
 		Carte[] main = joueur.getMain();
-		System.out.println("Vos cartes sont : \n\n");
+		Carte carte;
+		System.out.println("\nVos cartes sont : \n\n");
 		for (int i = 0; i < joueur.getNbCarte(); i++) {
-			System.out.println(main[i].getEffetCarte().getNom() + "\n");
+			carte=main[i];
+			System.out.println(carte.getDescription().getNom() + " - effet : "+carte.getDescription().getDescription()+"\n");
 		}
 	}
 
@@ -18,10 +20,10 @@ public interface IAffichage {
 		Banc objetBanc = joueur.getBanc();
 		Carte[] tableauBanc = objetBanc.getBanc();
 
-		if (joueur.getCarteBancRestante()!=0) {
+		if (joueur.getCarteBancRestante() != 0) {
 			System.out.println("\nVos cartes de banc sont : \n");
-			for (int i = 0; i < joueur.getCarteBancRestante() ; i++) {
-				System.out.println(tableauBanc[i].getEffetCarte().getNom() + "\n");
+			for (int i = 0; i < joueur.getCarteBancRestante(); i++) {
+				System.out.println(tableauBanc[i].getDescription().getNom() + "\n");
 			}
 		} else {
 			afficherBancVide();
@@ -29,7 +31,7 @@ public interface IAffichage {
 	}
 
 	public default void afficherMsgCartePoseeSurBanc(Carte carte) {
-		System.out.println("La carte " + carte.getEffetCarte().getNom() + " est ajouté à votre banc");
+		System.out.println("La carte " + carte.getDescription().getNom() + " est ajouté à votre banc");
 	}
 
 	public default void afficherCarteRemplacerSurBanc() {
@@ -40,9 +42,9 @@ public interface IAffichage {
 	public static void afficherCartePoseeSurZoneAttaque(Carte carteZoneAttaque) {
 		if (carteZoneAttaque != null) {
 			System.out.println("La dernière carte jouer sur la zone d'attaque est :  "
-					+ carteZoneAttaque.getEffetCarte().getNom());
+					+ carteZoneAttaque.getDescription().getNom());
 		} else {
-			System.out.println("\nLa zone d'attaque est vide");
+			afficherZonneAttaqueVide();
 		}
 	}
 
@@ -61,15 +63,34 @@ public interface IAffichage {
 		System.out.println("Les Vaillant pirates sont : \n");
 	}
 
-	public static void donnerStatusJoueur(Joueur joueur) {
-		int vie = joueur.getPv();
-		int pop = joueur.getPopularite();
-		System.out.println(joueur.getNom() + " : " + "\nVie : " + vie + " \npopularité : " + pop);
+	public static void donnerStatusJoueur(Joueur joueur, Joueur adversaire) {
+		int vieJ = joueur.getPv();
+		int popJ = joueur.getPopularite();
+		int vieA = adversaire.getPv();
+		int popA = adversaire.getPopularite();
+		afficherSeparation("");
+		System.out.println(
+				"Status adversaire (" + adversaire.getNom() + ") : " + "\nVie : " + vieA + " \npopularité : " + popA);
+		if (adversaire.getBanc() != null) {
+			afficherBanc(adversaire);
+		} else {
+			afficherBancVide();
+		}
+		if (adversaire.getZoneAttaque() == null) {
+			IAffichage.afficherZonneAttaqueVide();
+		} else {
+			IAffichage.afficherCartePoseeSurZoneAttaque(adversaire.getZoneAttaque().getCarteZoneAttaque());
+
+		}
+		afficherSeparation("\n");
+
+		System.out
+				.println("Status Joueur (" + joueur.getNom() + ") : " + "\nVie : " + vieJ + " \npopularité : " + popJ);
 		afficherMain(joueur);
 		if (joueur.getBanc() != null) {
 			afficherBanc(joueur);
 		} else {
-			System.out.println("\nLe banc est vide");
+			afficherBancVide();
 		}
 		if (joueur.getZoneAttaque() == null) {
 			IAffichage.afficherZonneAttaqueVide();
@@ -78,6 +99,10 @@ public interface IAffichage {
 
 		}
 
+	}
+
+	public static void afficherSeparation(String string) {
+		System.out.println("--------------"+string);
 	}
 
 	public static void affichageDonnerJoueur(int num) {
@@ -93,7 +118,7 @@ public interface IAffichage {
 	}
 
 	public static void afficherBancVide() {
-		System.out.println("Le banc est vide");
+		System.out.println("Le banc est vide\n");
 	}
 
 	public static void afficherCarteJouer(String nom) {
@@ -110,6 +135,14 @@ public interface IAffichage {
 
 	public static void afficherErreurSwitchcase() {
 		System.out.println("Erreur vous ne pouvez trier que le banc ou la main");
+	}
+
+	public static void afficherCarteMalPoser() {
+		System.out.println("erreur la carte s'est mise sur la mauvaise zone");
+	}
+
+	public static void affichageBlocageDefensif() {
+		System.out.println("");
 	}
 
 }

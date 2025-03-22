@@ -11,6 +11,7 @@ public class Joueur implements IAffichage {
 	private int nbCarteEnMain = 0;
 	private Banc banc;
 	private ZoneAttaque zoneAttaque;
+	private Carte derniereCarteJouer;
 	private static Scanner scaner = new Scanner(System.in);
 
 	public Joueur(String nom) {
@@ -30,20 +31,20 @@ public class Joueur implements IAffichage {
 		return popularite;
 	}
 
-	public int modifierVie(int degat) {
+	public int modifierVie(int valDeVie) {
 		int vie;
 
-		this.pv = this.getPv() - degat;
+		this.pv += valDeVie;
 		vie = this.getPv();
 
 		return vie;
 
 	}
 
-	public int modifierPop(int populariteEnMoins) {
+	public int modifierPop(int valDePop) {
 		int pop;
 
-		this.popularite = this.getPopularite() - populariteEnMoins;
+		this.popularite += +valDePop;
 		pop = this.getPopularite();
 
 		return pop;
@@ -75,11 +76,8 @@ public class Joueur implements IAffichage {
 			}
 			this.nbCarteEnMain++;
 
-
 		}
 	}
-
-	
 
 	public Carte[] getMain() {
 		return this.main;
@@ -95,14 +93,13 @@ public class Joueur implements IAffichage {
 	}
 
 	public int getCarteBancRestante() {
-		return banc.getCartePosee();
+		return banc.getCartePoseeBanc();
 	}
 
 	public void jouerCarteSurBanc(Carte carte, Joueur adversaire) {
-		if (banc.getCartePosee() < 6) {
-			
+		if (this.banc.getCartePoseeBanc() < 6) {
+
 			this.banc.ajouterCarte(carte);
-			
 		}
 
 		else {
@@ -110,16 +107,12 @@ public class Joueur implements IAffichage {
 			int nbCarteRemplacer = scaner.nextInt();
 			Carte ancienneCarte = this.banc.modifierCarte(carte, nbCarteRemplacer);
 			this.retirerCarteBanc(ancienneCarte);
-			
 
 		}
-		carte.appliquerEffet(this, adversaire);
-
 	}
 
 	public void jouerCarteSurZoneAttaque(Carte carte, Joueur adversaire) {
 		zoneAttaque.ajouterCarte(carte);
-		carte.appliquerEffet(this, adversaire);
 	}
 
 	public void jouerCarte(Joueur adversaire) {
@@ -129,33 +122,50 @@ public class Joueur implements IAffichage {
 		this.main[nbCarte - 1] = null;
 		this.nbCarteEnMain--;
 		this.trierCarte(this, nbCarte);
-		IAffichage.afficherCarteJouer(carte.getEffetCarte().getNom());
+		IAffichage.afficherCarteJouer(carte.getDescription().getNom());
 
-		if (carte.getEffetCarte().getType().equals("Popularité") ) {
-			if (this.banc== null) {
-				this.banc= new Banc(carte);
-				jouerCarteSurBanc(carte, adversaire);
+		String typeCarte = carte.getDescription().getType();
 
-			}else {
-				jouerCarteSurBanc(carte, adversaire);
-
+		switch (typeCarte) {
+		case "Popularité":
+			if (this.banc == null) {
+				this.banc = new Banc(carte);
 			}
-		} else {
+			jouerCarteSurBanc(carte, adversaire);
+			break;
+		case "PV":
 			if (this.zoneAttaque == null) {
 				zoneAttaque = new ZoneAttaque(carte);
-				jouerCarteSurZoneAttaque(carte, adversaire);
-			} else {
-				jouerCarteSurZoneAttaque(carte, adversaire);
-
 			}
+			jouerCarteSurZoneAttaque(carte, adversaire);
+			break;
+
+		default:
+			IAffichage.afficherCarteMalPoser();
+			break;
+
 		}
+		String nomDerniereCarte = null;
+
+		if (adversaire.derniereCarteJouer != null) {
+		    nomDerniereCarte = adversaire.derniereCarteJouer.getDescription().getNom();
+		}
+
+		if ("Blocage Défensif".equals(nomDerniereCarte)) {
+		    IAffichage.affichageBlocageDefensif();
+		} else {
+		    carte.appliquerEffet(this, adversaire);
+		}
+
+		this.derniereCarteJouer = carte;
+
 	}
 
 	public Joueur initJoueur(Pioche objetPioche) {
 		for (int i = 0; i < 4; i++) {
 			this.piocher(objetPioche);
-		}		
-	return this;
+		}
+		return this;
 	}
 
 	public void trierCarte(Joueur joueur, int numCarte) {

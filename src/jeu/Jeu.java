@@ -35,15 +35,16 @@ public class Jeu implements IAffichage {
 		Carte revolteOrganisee = new RevolteOrganisee(Description.REVOLTEORGANISEE);
 		Carte mainDeFer = new MainDeFer(Description.MAINDEFER);
 		Carte coupDeSabre = new CoupDeSabre(Description.COUPDESABRE);
-		Carte abordageReussi = new AbordageReussi(Description.MAINDEFER);
+		Carte abordageReussi = new AbordageReussi(Description.ABORDAGEREUSSI);
 		Carte discoursInspirant = new DiscoursInspirant(Description.DISCOURSINSPIRANT);
+		Carte blocageDefensif = new BlocageDéfensif(Description.BLOCAGEDEFENSIF);
 		piocheObjet.getPiocheTableau()[0] = mainDeFer;
 		piocheObjet.getPiocheTableau()[1] = mainDeFer;
 		piocheObjet.getPiocheTableau()[2] = mainDeFer;
 		piocheObjet.getPiocheTableau()[3] = mainDeFer;
-		piocheObjet.getPiocheTableau()[4] = mainDeFer;
+		piocheObjet.getPiocheTableau()[4] = blocageDefensif;
 		piocheObjet.getPiocheTableau()[5] = mainDeFer;
-		piocheObjet.getPiocheTableau()[6] = mainDeFer;
+		piocheObjet.getPiocheTableau()[6] = blocageDefensif;
 		piocheObjet.getPiocheTableau()[7] = mainDeFer;
 		piocheObjet.getPiocheTableau()[8] = mainDeFer;
 		piocheObjet.getPiocheTableau()[9] = revolteOrganisee;
@@ -53,11 +54,11 @@ public class Jeu implements IAffichage {
 		piocheObjet.getPiocheTableau()[13] = revolteOrganisee;
 		piocheObjet.getPiocheTableau()[14] = revolteOrganisee;
 		piocheObjet.getPiocheTableau()[15] = revolteOrganisee;
-		piocheObjet.getPiocheTableau()[16] = revolteOrganisee;
+		piocheObjet.getPiocheTableau()[16] = blocageDefensif;
 		piocheObjet.getPiocheTableau()[17] = revolteOrganisee;
 		piocheObjet.getPiocheTableau()[18] = revolteOrganisee;
 		piocheObjet.getPiocheTableau()[19] = revolteOrganisee;
-		piocheObjet.getPiocheTableau()[20] = revolteOrganisee;
+		piocheObjet.getPiocheTableau()[20] = blocageDefensif;
 		piocheObjet.getPiocheTableau()[21] = revolteOrganisee;
 		piocheObjet.getPiocheTableau()[22] = coupDeSabre;
 		piocheObjet.getPiocheTableau()[23] = coupDeSabre;
@@ -71,7 +72,7 @@ public class Jeu implements IAffichage {
 		piocheObjet.getPiocheTableau()[31] = abordageReussi;
 		piocheObjet.getPiocheTableau()[32] = discoursInspirant;
 		piocheObjet.getPiocheTableau()[33] = discoursInspirant;
-		piocheObjet.getPiocheTableau()[34] = discoursInspirant;
+		piocheObjet.getPiocheTableau()[34] = blocageDefensif;
 		piocheObjet.getPiocheTableau()[35] = discoursInspirant;
 		piocheObjet.getPiocheTableau()[36] = discoursInspirant;
 		piocheObjet.getPiocheTableau()[37] = discoursInspirant;
@@ -90,7 +91,7 @@ public class Jeu implements IAffichage {
 			objetPioche.getPiocheTableau()[i] = objetPioche.getPiocheTableau()[numRandom];
 			objetPioche.getPiocheTableau()[numRandom] = tempCarte;
  
-		}//dqsdqsdq
+		}
 
 		return objetPioche;
 	}
@@ -111,8 +112,7 @@ public class Jeu implements IAffichage {
 		if (numJoueur == 3) {
 			numJoueur = 1;
 		}
-		Joueur joueur = joueurs[numJoueur - 1];
-		return joueur;
+		return joueurs[numJoueur - 1];
 	}
 
 	private Pioche getPioche() {
@@ -120,13 +120,13 @@ public class Jeu implements IAffichage {
 	}
 
 	private int getTourJoueur(int nbTour) {
-		int joueur;
+		int numJoueur;
 		if (nbTour % 2 == 0) {
-			joueur = 2;
+			numJoueur = 2;
 		} else {
-			joueur = 1;
+			numJoueur = 1;
 		}
-		return (int) joueur;
+		return numJoueur;
 	}
 
 	public static void main(String[] args) {
@@ -150,8 +150,7 @@ public class Jeu implements IAffichage {
 			joueur = jeu.getJoueur(tourJoueur);
 			adversaire = jeu.getJoueur(tourJoueur + 1);
 			joueur.piocher(jeu.getPioche());
-			System.out.println("le joueur possede " + joueur.getNbCarte());
-			IAffichage.donnerStatusJoueur(jeu.getJoueur(tourJoueur));
+			IAffichage.donnerStatusJoueur(joueur,adversaire);
 
 			joueur.jouerCarte(adversaire);
 			
