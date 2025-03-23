@@ -1,7 +1,7 @@
 package jeu;
 
 public class Banc {
-	protected Carte[] bancTableau = new Carte[5];
+	private Carte[] bancTableau = new Carte[5];
 	private int cartePoseeBanc = 0;
 public Banc(Carte carte) {
 	this.bancTableau[1]=carte;
