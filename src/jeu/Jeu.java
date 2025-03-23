@@ -1,14 +1,12 @@
 package jeu;
 
 import java.security.SecureRandom;
-import java.util.Scanner;
 
 import affichage.IAffichage;
 
 public class Jeu implements IAffichage {
 	private Pioche pioche;
-	private Joueur[] joueurs = new Joueur[2];
-	private static Scanner scaner = new Scanner(System.in);
+	private static Joueur[] joueurs = new Joueur[2];
 	private static SecureRandom random;
 	static {
 		try {
@@ -17,18 +15,6 @@ public class Jeu implements IAffichage {
 			e.printStackTrace();
 			random = new SecureRandom();
 		}
-	}
-
-	public Jeu(Joueur[] joueurs, Pioche pioche) {
-		this.joueurs = joueurs;
-		this.pioche = pioche;
-	}
-
-	public static Joueur donnerJoueur(int numJoueur) {
-		IAffichage.affichageDonnerJoueur(numJoueur);
-		String nom = scaner.next();
-		return new Joueur(nom);
-
 	}
 
 	public static Pioche initPioche() {
@@ -80,68 +66,71 @@ public class Jeu implements IAffichage {
 	}
 
 	private static Jeu initJeu() {
-		Joueur joueur1 = donnerJoueur(1);
-		Joueur joueur2 = donnerJoueur(2);
-		Joueur[] joueurs = new Joueur[2];
-		joueurs[0] = joueur1;
-		joueurs[1] = joueur2;
-		Pioche pioche = initPioche();
+		Jeu jeu = new Jeu();
 
-		Jeu jeu = new Jeu(joueurs, pioche);
+		Pioche pioche = initPioche();
 
 		jeu.pioche = shuffle(pioche);
 
+		Joueur joueur1 = new Joueur();
+		Joueur joueur2 = new Joueur();
+		joueur1.initJoueur(jeu, 1);
+		joueur2.initJoueur(jeu, 2);
+		Joueur[] joueurs = new Joueur[2];
+		joueurs[0] = joueur1;
+		joueurs[1] = joueur2;
+		Jeu.joueurs = joueurs;
 		return jeu;
 	}
 
-	public Joueur getJoueur(int numJoueur) {
-		if (numJoueur == 3) {
-			numJoueur = 1;
-		}
-		return joueurs[numJoueur - 1];
-	}
-
-	private Pioche getPioche() {
+	public Pioche getPioche() {
 		return pioche;
 	}
 
-	private int getTourJoueur(int nbTour) {
-		int numJoueur;
-		if (nbTour % 2 == 0) {
-			numJoueur = 2;
-		} else {
-			numJoueur = 1;
+	public static void piocher(Pioche objetPioche, Joueur joueur) {
+		while (joueur.getNbCarteEnMain() < 5) {
+			Carte carte = objetPioche.donnerCarte(objetPioche);
+			if (objetPioche.getCarteRestantePioche() < 1) {
+				IAffichage.afficherPiocheVide();
+			} else {
+				if (joueur.getNbCarteEnMain() == 0) {
+					joueur.setMain(carte);
+
+				} else {
+					joueur.setMain(carte);
+					if (joueur.getNbCarteEnMain() < 5) {
+					}
+				}
+				joueur.setNbCarteEnMain();
+
+			}
 		}
-		return numJoueur;
 	}
 
 	public static void main(String[] args) {
 		int nbTour = 0;
-		int tourJoueur;
-		Joueur joueur = null;
-		Joueur adversaire = null;
 		IAffichage.afficherNbTour(nbTour);
 		Jeu jeu = initJeu();
+		Joueur joueur = joueurs[0];
+		Joueur adversaire = joueurs[1];
 
 		IAffichage.donnerContexte();
 		IAffichage.donnerRegles();
 
-		jeu.getJoueur(1).initJoueur(jeu.getPioche());
-		jeu.getJoueur(2).initJoueur(jeu.getPioche());
-		while (jeu.getJoueur(1).getPv() > 0 && jeu.getJoueur(2).getPv() > 0 && jeu.getJoueur(1).getPopularite() < 6
-				&& jeu.getJoueur(2).getPopularite() < 6) {
+		while (joueur.getPv() > 0 && adversaire.getPv() > 0 && joueur.getPopularite() < 6
+				&& adversaire.getPopularite() < 6) {
 			nbTour++;
 			IAffichage.afficherNbTour(nbTour);
-			tourJoueur = jeu.getTourJoueur(nbTour);
-			joueur = jeu.getJoueur(tourJoueur);
-			adversaire = jeu.getJoueur(tourJoueur + 1);
-			joueur.piocher(jeu.getPioche());
+
+			joueur = joueur.getTourJoueur(nbTour, joueurs);
+			adversaire = adversaire.getTourJoueur(nbTour + 1, joueurs);
+			piocher(jeu.getPioche(), joueur);
 			IAffichage.donnerStatusJoueur(joueur, adversaire);
 
 			joueur.jouerCarte(adversaire);
 
 		}
-		IAffichage.afficherVictoire(joueur,adversaire);
+		IAffichage.afficherVictoire(joueur, adversaire);
 
 	}
 

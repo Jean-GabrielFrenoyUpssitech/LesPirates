@@ -52,7 +52,7 @@ public interface IAffichage {
 		}
 	}
 
-	public default void afficherPiocheVide() {
+	public static void afficherPiocheVide() {
 		System.out.println("la pioche est vide");
 	}
 
@@ -180,7 +180,7 @@ public interface IAffichage {
 	}
 
 	public static void afficherEffetEchangeForce() {
-		System.out.println("Ce fut un tour bien inutile");
+		System.out.println("Euhh.. En faite non la carte n'est pas jouer, il s'est protégé rappel toi. Ce fut un tour bien inutile");
 	}
 
 }

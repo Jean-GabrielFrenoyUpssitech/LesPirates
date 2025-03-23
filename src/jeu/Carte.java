@@ -29,4 +29,5 @@ public abstract class  Carte {
 		joueur.modifierVie(-this.getModifVie());
 		joueur.modifierPop(-this.getModifPop());
 	}
+	
 }

@@ -14,11 +14,6 @@ public class Joueur implements IAffichage {
 	private Carte derniereCarteJouer;
 	private static Scanner scaner = new Scanner(System.in);
 
-	public Joueur(String nom) {
-		this.nom = nom;
-
-	}
-
 	public String getNom() {
 		return nom;
 	}
@@ -56,26 +51,7 @@ public class Joueur implements IAffichage {
 		return nbCarteEnMain;
 	}
 
-	public void piocher(Pioche objetPioche) {
-		while (this.nbCarteEnMain < 5) {
-			Carte carte = objetPioche.donnerCarte(objetPioche);
-			if (objetPioche.getCarteRestantePioche() < 1) {
-				afficherPiocheVide();
-			} else {
-				if (this.nbCarteEnMain == 0) {
-					this.main[this.nbCarteEnMain] = carte;
-
-				} else {
-					this.main[this.nbCarteEnMain] = carte;
-					if (this.nbCarteEnMain < 5) {
-					}
-				}
-				this.nbCarteEnMain++;
-
-			}
-		}
-	}
-
+	
 	public Carte[] getMain() {
 		return this.main;
 	}
@@ -111,7 +87,7 @@ public class Joueur implements IAffichage {
 		}
 	}
 
-	public void jouerCarteSurZoneAttaque(Carte carte, Joueur adversaire) {
+	public void jouerCarteSurZoneAttaque(Carte carte) {
 		zoneAttaque.ajouterCarte(carte);
 	}
 
@@ -123,14 +99,15 @@ public class Joueur implements IAffichage {
 		this.trierCarte(this, nbCarteAJouer);
 		IAffichage.afficherCarteJouer(carte.getDescription().getNom());
 		String typeCarte = carte.getDescription().getType();
-		placerCarteSurZone(carte,adversaire,typeCarte);
+	
 		String nomDerniereCarte = null;
 		if (adversaire.derniereCarteJouer != null) {
 			nomDerniereCarte = adversaire.derniereCarteJouer.getDescription().getNom();
 		}
 		if ("Blocage Défensif".equals(nomDerniereCarte)) {
-			IAffichage.affichageBlocageDefensif();
+			IAffichage.afficherEffetEchangeForce();
 		} else {
+			placerCarteSurZone(carte,adversaire,typeCarte);
 			carte.appliquerEffet(this, adversaire);
 		}
 		this.derniereCarteJouer = carte;
@@ -148,13 +125,11 @@ public class Joueur implements IAffichage {
 			if (this.zoneAttaque == null) {
 				zoneAttaque = new ZoneAttaque(carte);
 			}
-			jouerCarteSurZoneAttaque(carte, adversaire);
+			jouerCarteSurZoneAttaque(carte);
 			break;
 		default:
-			if (!"Echange Forcé".equals(carte.getDescription().getNom())) {
+			if (!"Stratégie".equals(carte.getDescription().getType())) {
 				IAffichage.afficherCarteMalPoser();
-			}else {
-				IAffichage.afficherEffetEchangeForce();
 
 			}
 			break;
@@ -173,10 +148,13 @@ public class Joueur implements IAffichage {
 		return nbCarte;
 	}
 
-	public Joueur initJoueur(Pioche objetPioche) {
+	public Joueur initJoueur(Jeu jeu,int numJoueur) {
+		IAffichage.affichageDonnerJoueur(numJoueur);
+		this.nom=scaner.next();
+		
 		for (int i = 0; i < 4; i++) {
 
-			this.piocher(objetPioche);
+			Jeu.piocher(jeu.getPioche(), this);
 		}
 		return this;
 	}
@@ -201,4 +179,21 @@ public class Joueur implements IAffichage {
 		main = mainAdv;
 	}
 
+	public Joueur getTourJoueur(int nbTour,Joueur[] joueurs) {
+		int numJoueur;
+		if (nbTour % 2 == 0) {
+			numJoueur = 2;
+		} else {
+			numJoueur = 1;
+		}
+		if (numJoueur == 3) {
+			numJoueur = 1;
+		}
+		return joueurs[numJoueur - 1];
+	}
+	public void setMain(Carte carte) {
+		this.main[this.getNbCarteEnMain()]=carte;}
+	public void setNbCarteEnMain() {
+		nbCarteEnMain++;
+	}
 }
