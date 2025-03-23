@@ -13,19 +13,6 @@ this.piocheTableau[0]=carte;
 }
 
 
-
-
-public void pioche() {
-	try {
-		random = SecureRandom.getInstanceStrong();
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
-}
-
-
-
-
 public int getCarteRestantePioche() {
 	return carteRestante;
 }
