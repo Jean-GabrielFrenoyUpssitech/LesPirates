@@ -1,0 +1,32 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "java",
+			"name": "Les Pirates (interface graphique)",
+			"request": "launch",
+			"mainClass": "affichage.InterfaceJeu",
+			"projectName": "LesPirates",
+			"cwd": "${workspaceFolder}",
+			"console": "integratedTerminal"
+		},
+		{
+			"type": "java",
+			"name": "Les Pirates (console seule)",
+			"request": "launch",
+			"mainClass": "jeu.Jeu",
+			"projectName": "LesPirates",
+			"cwd": "${workspaceFolder}",
+			"console": "integratedTerminal"
+		},
+		{
+			"type": "java",
+			"name": "Les Pirates (serveur réseau)",
+			"request": "launch",
+			"mainClass": "serveur.ServeurJeu",
+			"projectName": "LesPirates",
+			"cwd": "${workspaceFolder}",
+			"console": "integratedTerminal"
+		}
+	]
+}

@@ -1,5 +1,4 @@
 package jeu;
-
 import affichage.IAffichage;
 import java.util.Scanner;
 
@@ -9,9 +8,11 @@ public class Joueur implements IAffichage {
 	private int popularite = 0;
 	private Carte[] main = new Carte[5];
 	private int nbCarteEnMain = 0;
-	private Banc banc;
-	private ZoneAttaque zoneAttaque;
+	private Banc banc=new Banc();
 	private Carte derniereCarteJouer;
+	private int pointDActionMax=2;
+	private int pointDAction=pointDActionMax;
+	private int pointDActionJouerCarte=1;
 	private static Scanner scaner = new Scanner(System.in);
 
 	public String getNom() {
@@ -21,11 +22,30 @@ public class Joueur implements IAffichage {
 	public int getPv() {
 		return pv;
 	}
-
 	public int getPopularite() {
 		return popularite;
 	}
-
+	public int getPointDAction() {
+		return pointDAction;
+	}
+	
+	public void modifierPointDAction(int valDePoint) {
+		pointDAction+=valDePoint;
+	}
+	public int getPointDActionMax() {
+		return pointDActionMax;
+	}
+	public int getPointDActionJouerCarte() {
+		return pointDActionJouerCarte;
+	}
+	/*Si tu veux retirer il faut mettre un nb négatif*/
+	public void setPointDActionJouerCarte(int val){
+		pointDActionJouerCarte=pointDActionJouerCarte+val;
+	}
+	/*Redonne le droit de jouer une carte au début d'un nouveau tour*/
+	public void reinitialiserPointDActionJouerCarte(){
+		pointDActionJouerCarte=1;
+	}
 	public int modifierVie(int valDeVie) {
 		int vie;
 
@@ -35,6 +55,7 @@ public class Joueur implements IAffichage {
 		return vie;
 
 	}
+	
 
 	public int modifierPop(int valDePop) {
 		int pop;
@@ -51,7 +72,6 @@ public class Joueur implements IAffichage {
 		return nbCarteEnMain;
 	}
 
-	
 	public Carte[] getMain() {
 		return this.main;
 	}
@@ -70,7 +90,7 @@ public class Joueur implements IAffichage {
 	}
 
 	public void jouerCarteSurBanc(Carte carte, Joueur adversaire) {
-		if (this.banc.getCartePoseeBanc() < 5) {
+		 if (this.banc.getCartePoseeBanc() < 5) {
 			this.banc.ajouterCarte(carte);
 		} else {
 			int nbCarteRemplacer;
@@ -82,76 +102,85 @@ public class Joueur implements IAffichage {
 				}
 			} while (nbCarteRemplacer < 1 || nbCarteRemplacer > 5);
 
-			Carte ancienneCarte = this.banc.modifierCarte(carte, nbCarteRemplacer - 1);
-			ancienneCarte.retirerEffet(this);
+			remplacerCarteBanc(carte, nbCarteRemplacer);
 		}
+
 	}
 
-	public void jouerCarteSurZoneAttaque(Carte carte) {
-		zoneAttaque.ajouterCarte(carte);
+	/* Remplace la carte du banc au slot donné (1 à 5). Utilisé par jouerCarteSurBanc (mode console)
+	 * et par le serveur réseau une fois que le client a répondu à une demande de choix de slot. */
+	public void remplacerCarteBanc(Carte carte, int slot) {
+		Carte ancienneCarte = this.banc.modifierCarte(carte, slot - 1);
+		ancienneCarte.retirerEffet(this);
 	}
 
-	public void jouerCarte(Joueur adversaire) {
-		int nbCarteAJouer = getNbCarteAJouer();
-		Carte carte = this.getMain()[nbCarteAJouer - 1];
-		this.main[nbCarteAJouer - 1] = null;
-		this.nbCarteEnMain--;
-		this.trierCarte(this, nbCarteAJouer);
+	/* Vrai si la dernière carte jouée par l'adversaire (Blocage Défensif) annule l'effet qu'on s'apprête à lui infliger */
+	public boolean effetBloqueParAdversaire(Joueur adversaire) {
+		String nomDerniereCarteAdversaire = adversaire.derniereCarteJouer != null
+				? adversaire.derniereCarteJouer.getDescription().getNom() : null;
+		return "Blocage Défensif".equals(nomDerniereCarteAdversaire);
+	}
+
+	/* Vrai si jouer cette carte nécessitera de choisir quelle carte du banc remplacer */
+	public boolean banIPleinPourCarte(Carte carte) {
+		return "Popularité".equals(carte.getDescription().getType()) && getCarteBancRestante() == 5;
+	}
+
+	public void jouerCarte(Joueur adversaire, int numCarte) {
+		Carte carte = this.getMain()[numCarte];
+
 		IAffichage.afficherCarteJouer(carte.getDescription().getNom());
-		String typeCarte = carte.getDescription().getType();
-	
-		String nomDerniereCarte = null;
-		if (adversaire.derniereCarteJouer != null) {
-			nomDerniereCarte = adversaire.derniereCarteJouer.getDescription().getNom();
-		}
-		if ("Blocage Défensif".equals(nomDerniereCarte)) {
+		if (effetBloqueParAdversaire(adversaire)) {
 			IAffichage.afficherEffetEchangeForce();
 		} else {
-			placerCarteSurZone(carte,adversaire,typeCarte);
+			placerCarteSurZone(carte, adversaire, carte.getDescription().getType());
 			carte.appliquerEffet(this, adversaire);
 		}
 		this.derniereCarteJouer = carte;
 	}
 
-	private void placerCarteSurZone(Carte carte, Joueur adversaire,String typeCarte) {
+	/* Variante utilisée par le serveur réseau quand le banc était plein : le slot a déjà
+	 * été choisi par le client, donc on remplace directement au lieu de repasser par placerCarteSurZone. */
+	public void jouerCarteAvecSlotBanc(Joueur adversaire, int numCarte, int slot) {
+		Carte carte = this.getMain()[numCarte];
+
+		IAffichage.afficherCarteJouer(carte.getDescription().getNom());
+		if (effetBloqueParAdversaire(adversaire)) {
+			IAffichage.afficherEffetEchangeForce();
+		} else {
+			remplacerCarteBanc(carte, slot);
+			carte.appliquerEffet(this, adversaire);
+		}
+		this.derniereCarteJouer = carte;
+	}
+
+	private void placerCarteSurZone(Carte carte, Joueur adversaire, String typeCarte) {
 		switch (typeCarte) {
 		case "Popularité":
-			if (this.banc == null) {
-				this.banc = new Banc(carte);
-			}
+
 			jouerCarteSurBanc(carte, adversaire);
 			break;
-		case "PV":
-			if (this.zoneAttaque == null) {
-				zoneAttaque = new ZoneAttaque(carte);
-			}
-			jouerCarteSurZoneAttaque(carte);
-			break;
+
 		default:
 			if (!"Stratégie".equals(carte.getDescription().getType())) {
 				IAffichage.afficherCarteMalPoser();
 
 			}
 			break;
-		}		
+		}
 	}
 
-	private int getNbCarteAJouer() {
-		int nbCarte;
-		do {
-			IAffichage.afficherChoisirCarte();
-			nbCarte = scaner.nextInt();
-			if (nbCarte < 1 || nbCarte > 5) {
-				IAffichage.afficherChiffreTropGrand();
-			}
-		} while (nbCarte < 1 || nbCarte > 5);
-		return nbCarte;
-	}
+	
 
-	public Joueur initJoueur(Jeu jeu,int numJoueur) {
+	public Joueur initJoueur(Jeu jeu, int numJoueur) {
 		IAffichage.affichageDonnerJoueur(numJoueur);
-		this.nom=scaner.next();
-		
+		return initJoueur(jeu, numJoueur, scaner.next());
+	}
+
+	/* Variante réseau : le nom arrive du client (message JOIN) au lieu d'être lu au clavier */
+	public Joueur initJoueur(Jeu jeu, int numJoueur, String nomFourni) {
+		this.nom = nomFourni;
+
 		for (int i = 0; i < 4; i++) {
 
 			Jeu.piocher(jeu.getPioche(), this);
@@ -159,27 +188,32 @@ public class Joueur implements IAffichage {
 		return this;
 	}
 
-	public void trierCarte(Joueur joueur, int numCarte) {
-		if (numCarte != 5) {
-			int test = 5 - numCarte;
-
-			for (int i = 0; i < test; i++) {
-				joueur.main[numCarte - 1 + i] = joueur.main[numCarte + i];
-
-			}
-
+	public void trierCarte(int index) {
+		for (int i = index; i < main.length - 1; i++) {
+			main[i] = main[i + 1]; // décale tout vers la gauche
 		}
+		main[main.length - 1] = null; // on vide la dernière case qui a été décalée
 	}
 
-	public ZoneAttaque getZoneAttaque() {
-		return zoneAttaque;
-	}
+
 
 	public void setMain(Carte[] mainAdv) {
 		main = mainAdv;
 	}
 
-	public Joueur getTourJoueur(int nbTour,Joueur[] joueurs) {
+	/* Échange la main ET le nombre de cartes en main avec un autre joueur (utilisé par Echange Forcé).
+	 * setMain(Carte[]) seul ne suffit pas : il ne touche pas nbCarteEnMain, ce qui désynchronise
+	 * le tableau et son compteur dès que les deux joueurs n'ont pas le même nombre de cartes. */
+	public void echangerMainAvec(Joueur autre) {
+		Carte[] mainTemp = this.main;
+		int nbCarteTemp = this.nbCarteEnMain;
+		this.main = autre.main;
+		this.nbCarteEnMain = autre.nbCarteEnMain;
+		autre.main = mainTemp;
+		autre.nbCarteEnMain = nbCarteTemp;
+	}
+
+	public Joueur getTourJoueur(int nbTour, Joueur[] joueurs) {
 		int numJoueur;
 		if (nbTour % 2 == 0) {
 			numJoueur = 2;
@@ -191,9 +225,19 @@ public class Joueur implements IAffichage {
 		}
 		return joueurs[numJoueur - 1];
 	}
+
 	public void setMain(Carte carte) {
-		this.main[this.getNbCarteEnMain()]=carte;}
-	public void setNbCarteEnMain() {
+		this.main[this.getNbCarteEnMain()] = carte;
+	}
+
+	public void setAjouterNbCarteEnMain() {
 		nbCarteEnMain++;
+	}
+	public void setRetirerNbCarteEnMain() {
+		nbCarteEnMain--;
+	}
+	public void retirerCarte(int indexCarte) {
+		this.main[indexCarte] = null;
+
 	}
 }

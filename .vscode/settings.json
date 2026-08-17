@@ -1,0 +1,6 @@
+{
+	"java.project.sourcePaths": ["src"],
+	"java.project.outputPath": "bin",
+	"java.project.referencedLibraries": ["core-3.3.7.jar"],
+	"java.debug.settings.console": "integratedTerminal"
+}

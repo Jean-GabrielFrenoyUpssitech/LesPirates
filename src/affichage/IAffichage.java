@@ -43,14 +43,7 @@ public interface IAffichage {
 				"\nIl n'y a plus de place sur votre banc veuillez choisir quel carte remplacer entre 1 et 5: ");
 	}
 
-	public static void afficherCartePoseeSurZoneAttaque(Carte carteZoneAttaque) {
-		if (carteZoneAttaque != null) {
-			System.out.println("La dernière carte jouer sur la zone d'attaque est :  "
-					+ carteZoneAttaque.getDescription().getNom());
-		} else {
-			afficherZonneAttaqueVide();
-		}
-	}
+	
 
 	public static void afficherPiocheVide() {
 		System.out.println("la pioche est vide");
@@ -87,12 +80,7 @@ public interface IAffichage {
 		} else {
 			afficherBancVide();
 		}
-		if (joueur.getZoneAttaque() == null) {
-			IAffichage.afficherZonneAttaqueVide();
-		} else {
-			IAffichage.afficherCartePoseeSurZoneAttaque(joueur.getZoneAttaque().getCarteZoneAttaque());
-
-		}
+		
 	}
 
 	public static void donnerStatusSubAdversaire(Joueur adversaire, int vieA, int popA) {
@@ -103,12 +91,7 @@ public interface IAffichage {
 		} else {
 			afficherBancVide();
 		}
-		if (adversaire.getZoneAttaque() == null) {
-			IAffichage.afficherZonneAttaqueVide();
-		} else {
-			IAffichage.afficherCartePoseeSurZoneAttaque(adversaire.getZoneAttaque().getCarteZoneAttaque());
-
-		}
+		
 	}
 
 	public static void afficherSeparation(String string) {
@@ -123,9 +106,7 @@ public interface IAffichage {
 		System.out.println("\n\n______________\nnb tour : " + nbTour + "\n\n");
 	}
 
-	public static void afficherChoisirCarte() {
-		System.out.println("\nVeuillez choisir un nombre entre 1 et 5, correspondant à vous cartes");
-	}
+	
 
 	public static void afficherBancVide() {
 		System.out.println("Le banc est vide\n");
@@ -135,25 +116,21 @@ public interface IAffichage {
 		System.out.println("La carte jouer est : " + nom);
 	}
 
-	public static void afficherZonneAttaqueVide() {
-		System.out.println("La zone d'attaque est vide");
-	}
-
 	/* Determination du gagnant */
 	public static void afficherVictoire(Joueur joueur, Joueur adversaire) {
 		String gagnant;
 		String type;
 		if (joueur.getPv() < 1) {
-			gagnant = joueur.getNom();
+			gagnant = adversaire.getNom();
 			type = "assassinat";
 		} else if (adversaire.getPv() < 1) {
-			gagnant = adversaire.getNom();
+			gagnant = joueur.getNom();
 			type = "assassinat";
 		} else if (joueur.getPopularite() < 1) {
-			gagnant = joueur.getNom();
+			gagnant = adversaire.getNom();
 			type = "popularité";
 		} else {
-			gagnant = adversaire.getNom();
+			gagnant = joueur.getNom();
 			type = "popularité";
 		}
 		System.out.println("Le gagnant est : " + gagnant + " victoire par " + type);

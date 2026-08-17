@@ -3,9 +3,7 @@ package jeu;
 public class Banc {
 	private Carte[] bancTableau = new Carte[5];
 	private int cartePoseeBanc = 0;
-public Banc(Carte carte) {
-	this.bancTableau[1]=carte;
-}
+
 	public void setCartePosee() {
 		cartePoseeBanc++;
 	}

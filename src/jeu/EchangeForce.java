@@ -11,10 +11,7 @@ public class EchangeForce extends Carte implements IAffichage {
 
 	@Override
 	protected void appliquerEffet(Joueur joueur, Joueur adversaire) {
-		Joueur intermediaire = new Joueur();
-		intermediaire.setMain(adversaire.getMain());
-		adversaire.setMain(joueur.getMain());
-		joueur.setMain(intermediaire.getMain());	
+		joueur.echangerMainAvec(adversaire);
 		joueur.modifierPop(modifPop);
 		IAffichage.affichageEchangeForce();
 	}

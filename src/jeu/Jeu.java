@@ -6,7 +6,7 @@ import affichage.IAffichage;
 
 public class Jeu implements IAffichage {
 	private Pioche pioche;
-	private static Joueur[] joueurs = new Joueur[2];
+	public static Joueur[] joueurs = new Joueur[2];
 	private static SecureRandom random;
 	static {
 		try {
@@ -37,7 +37,7 @@ public class Jeu implements IAffichage {
 		return piocheObjet;
 	}
 
-	private static Carte[] initCartes() {
+	public static Carte[] initCartes() {
 		Carte revolteOrganisee = new RevolteOrganisee(Description.REVOLTEORGANISEE);
 		Carte mainDeFer = new MainDeFer(Description.MAINDEFER);
 		Carte coupDeSabre = new CoupDeSabre(Description.COUPDESABRE);
@@ -65,7 +65,7 @@ public class Jeu implements IAffichage {
 		return objetPioche;
 	}
 
-	private static Jeu initJeu() {
+	public static Jeu initJeu() {
 		Jeu jeu = new Jeu();
 
 		Pioche pioche = initPioche();
@@ -76,6 +76,25 @@ public class Jeu implements IAffichage {
 		Joueur joueur2 = new Joueur();
 		joueur1.initJoueur(jeu, 1);
 		joueur2.initJoueur(jeu, 2);
+		Joueur[] joueurs = new Joueur[2];
+		joueurs[0] = joueur1;
+		joueurs[1] = joueur2;
+		Jeu.joueurs = joueurs;
+		return jeu;
+	}
+
+	/* Variante réseau : les noms arrivent des clients (message JOIN) au lieu du clavier */
+	public static Jeu initJeu(String nomJoueur1, String nomJoueur2) {
+		Jeu jeu = new Jeu();
+
+		Pioche pioche = initPioche();
+
+		jeu.pioche = shuffle(pioche);
+
+		Joueur joueur1 = new Joueur();
+		Joueur joueur2 = new Joueur();
+		joueur1.initJoueur(jeu, 1, nomJoueur1);
+		joueur2.initJoueur(jeu, 2, nomJoueur2);
 		Joueur[] joueurs = new Joueur[2];
 		joueurs[0] = joueur1;
 		joueurs[1] = joueur2;
@@ -101,7 +120,7 @@ public class Jeu implements IAffichage {
 					if (joueur.getNbCarteEnMain() < 5) {
 					}
 				}
-				joueur.setNbCarteEnMain();
+				joueur.setAjouterNbCarteEnMain();
 
 			}
 		}
@@ -127,7 +146,7 @@ public class Jeu implements IAffichage {
 			piocher(jeu.getPioche(), joueur);
 			IAffichage.donnerStatusJoueur(joueur, adversaire);
 
-			joueur.jouerCarte(adversaire);
+			//joueur.jouerCarte(adversaire);
 
 		}
 		IAffichage.afficherVictoire(joueur, adversaire);
